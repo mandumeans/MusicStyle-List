@@ -6,7 +6,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
     <script src="Scripts/jquery-1.4.1.js"></script>
-    <script src="http://www.youtube.com/player_api"></script>
     <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server">
     </asp:ContentPlaceHolder>
@@ -17,7 +16,7 @@
         <div class="header">
             <div class="title">
                 <h1>
-                    Music StyleList
+                    MusicStyle List
                 </h1>
             </div>
         </div>

@@ -14,7 +14,9 @@
                 <input type="url" id="txtURLInput" placeholder="Type URL"/>
                 <input type="button" id="btnURLInput" value="Add"/>
             </div>
-            <div id="video">
+            <div class="video">
+                <div id="player">
+                </div>
             </div>
         </div>
     </div>
