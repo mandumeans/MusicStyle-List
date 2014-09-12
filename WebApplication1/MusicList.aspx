@@ -10,10 +10,6 @@
     </asp:ScriptManager>
     <div id="listLeft">
         <div class="content">
-            <div class="search">
-                <input type="url" id="txtURLInput" placeholder="Type URL"/>
-                <input type="button" id="btnURLInput" value="Add"/>
-            </div>
             <div class="video">
                 <div id="player">
                 </div>
@@ -22,6 +18,13 @@
     </div>
     <div id="listRight">
         <div class="content">
+            <div class="controller">
+                <div class="search">
+                    <input type="url" id="txtURLInput" placeholder="Type URL"/>
+                    <input type="button" id="btnURLInput" value="Add"/>
+                </div>
+                <input type="button" id="btnClearList" value="Clear all"/>
+            </div>
             <div class="playlistContent">
                 <ul id="playlist">
                 </ul>

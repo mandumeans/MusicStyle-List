@@ -46,6 +46,10 @@ var MUSICLIST = {
                 }
             }); //ajax end
         }); //btnURLInput click event end
+        $('#btnClearList').click(function () {
+            $('.musicListItem').remove();
+            nextVideoVID = null;
+        });
     }
 }
 
@@ -58,8 +62,8 @@ function isVIDExist(VID) {
     }
 }
 
+//Client Youtube URL validation
 function YoutubeVideoURLValidation(UrlInput) {
-    //URL check
     var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
     return (UrlInput.match(p)) ? RegExp.$1 : false;
 }
