@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Net;
 using System.Web;
 using System.Web.UI;
@@ -10,10 +11,11 @@ using System.Web.Services;
 using System.Web.Script.Serialization;
 using System.IO;
 using System.Xml;
-using Google.Apis.Samples.Helper;
-using Google.Apis.Services;
-using Google.Apis.Youtube.v3;
-using Google.Apis.Youtube.v3.Data;
+using Google.GData.Client;
+using Google.GData.Extensions;
+using Google.GData.YouTube;
+using Google.GData.Extensions.MediaRss;
+using Google.YouTube;
 
 namespace MusicList
 {
@@ -59,22 +61,22 @@ namespace MusicList
             const string FAIL_STRING = "False";
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://gdata.youtube.com/feeds/api/videos/" + VID);
-                request.Method = "HEAD";
-                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load("https://gdata.youtube.com/feeds/api/videos?q=" + keyword + "&v=2");
+                ArrayList alNewDataList = new ArrayList();
+                XmlNodeList title = xmlDoc.GetElementsByTagName("title");
+                int cnt = 1;
+                foreach (XmlNode ADDR_SET in title)
                 {
-                    if (response.StatusCode != HttpStatusCode.OK)
+                    foreach (XmlNode child in ADDR_SET.ChildNodes)
                     {
-                        return FAIL_STRING;
-                    }
-                    else
-                    {
-                        var xmlDoc = new XmlDocument();
-                        xmlDoc.Load("http://gdata.youtube.com/feeds/api/videos/" + VID);
-                        XmlNodeList title = xmlDoc.GetElementsByTagName("title");
-                        return (title.Item(0)).InnerText;
+                        alNewDataList.Add(child.InnerText);
                     }
                 }
+                StringBuilder sb = new StringBuilder();
+                JavaScriptSerializer jparser = new JavaScriptSerializer();
+                jparser.Serialize(alNewDataList, sb);
+                return sb.ToString();
             }
             catch (Exception ex)
             {
