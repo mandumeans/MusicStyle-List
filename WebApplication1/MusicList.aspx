@@ -20,10 +20,20 @@
         <div class="content">
             <div class="controller">
                 <div class="search">
+                    <input type="text" id="txtSearchInput" placeholder="Type Keyword"/>
+                    <input type="button" id="btnSearchInput" value="Search"/>
+                    <div class="searchlistContent">
+                        <ul id="searchlist">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="controller">
+                <div class="search">
                     <input type="url" id="txtURLInput" placeholder="Type URL"/>
                     <input type="button" id="btnURLInput" value="Add"/>
+                    <input type="button" id="btnClearList" value="Clear all"/>
                 </div>
-                <input type="button" id="btnClearList" value="Clear all"/>
             </div>
             <div class="playlistContent">
                 <ul id="playlist">

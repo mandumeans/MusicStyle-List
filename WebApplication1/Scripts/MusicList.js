@@ -46,6 +46,32 @@ var MUSICLIST = {
                 }
             }); //ajax end
         }); //btnURLInput click event end
+        $('#btnSearchInput').click(function () {
+            var UrlInput = document.getElementById('btnSearchInput').value;
+            var searchKeyword = document.getElementById('txtSearchInput').value;
+
+
+            $.ajax({
+                url: "../MusicList.aspx/YoutubeKeywordSearch",
+                type: "POST",
+                data: '{"keyword" : "' + searchKeyword + '"}',
+                contentType: "application/json",
+                dataType: "JSON",
+                timeout: 10000,
+                success: function (result) {
+                    var rawResult = jQuery.parseJSON(result).d;
+                    if (rawResult === 'False') {
+                        alert('There is no video on that URL');
+                    }
+                    else {
+                        AddNewVideoItem(VideoType.YouTube, UrlInput, rawResult);
+                    }
+                },
+                error: function (result) {
+                    return result;
+                }
+            }); //ajax end
+        }); //btnSearchInput click event end
         $('#btnClearList').click(function () {
             $('.musicListItem').remove();
             nextVideoVID = null;
