@@ -57,7 +57,7 @@ public class BaseHttpClient {
 			{
 				url = url + "?" + params;
 			}
-
+			
 			HttpGet getMethod = new HttpGet(url);
 			getMethod.setParams(httpParams);
 

@@ -11,8 +11,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
-public class BaseAsyncTask extends AsyncTask<Integer, Integer, HttpResponse>{
+public class BaseAsyncTask extends AsyncTask<Integer, Integer, Object>{
 	
 	//초기 세팅
 	private Context mContext = null;
@@ -84,48 +85,56 @@ public class BaseAsyncTask extends AsyncTask<Integer, Integer, HttpResponse>{
 		}
 	}
 	
-	@Override
-	protected HttpResponse doInBackground(Integer... params) {
+	@Override //통신 및 decoding 처리는 무조건 doInBackground에서 처리
+	protected Object doInBackground(Integer... params) {
 		
+		//통신 가능여부 확인
 		if(!BaseHttpClient.getInstance().checkConnectivity(mContext)){
 			mCallback.onRequestError(BaseConsts.HTTP_STATUS_SERVICE_UNAVAILABLE);
 			return null;
 		}
 		
-		mRequestType = mCallback.getRequestType();
+		HttpResponse result = null; //통신결과
+		String resultString = null; //String 통신결과
+		mRequestType = mCallback.getRequestType(); //통신 방법 타입(GET, POST)
+		mResultType = mCallback.getResultType(); //통신 결과 타입(JSON, XML)
 		
+		//통신부분
 		if(mRequestType == BaseConsts.REQUEST_TYPE_GET){
-			return BaseHttpClient.getInstance().doGet(mCallback.onRequestGetUrl(), mCallback.onRequestGetParameter());
+			result = BaseHttpClient.getInstance().doGet(mCallback.onRequestGetUrl(), mCallback.onRequestGetParameter());
 		} else if(mRequestType == BaseConsts.REQUEST_TYPE_POST){
-			return BaseHttpClient.getInstance().doPost(mCallback.onRequestGetUrl(), mCallback.onRequestGetParameter());
+			result = BaseHttpClient.getInstance().doPost(mCallback.onRequestGetUrl(), mCallback.onRequestGetParameter());
+		}
+		
+		//통신결과 Decode 부분
+		if(result.getStatusLine().getStatusCode() == BaseConsts.HTTP_STATUS_OK){
+			
+			resultString = BaseHttpResponse.getInstance().convertResponseToString(result);
+			
+			if(mResultType == BaseConsts.RESULT_TYPE_JSON){
+				return BaseHttpResponse.getInstance().convertStringToJSONObject(resultString);
+			} else {
+				return BaseHttpResponse.getInstance().convertStringToXml(resultString);
+			}
+		} else {
+			mCallback.onRequestError(result.getStatusLine().getStatusCode());
 		}
 		
 		return null;
 	}
 	
 	@Override
-	protected void onPostExecute(HttpResponse result) {
+	protected void onPostExecute(Object result) {
 		
 		if(result == null){
 			mCallback.onRequestError(BaseConsts.HTTP_STATUS_SERVICE_UNAVAILABLE);
 			return;
 		}
 		
-		int http_status_code = result.getStatusLine().getStatusCode();
-		String resultString = null;
-		
-		if(http_status_code == BaseConsts.HTTP_STATUS_OK){
-			
-			mResultType = mCallback.getResultType();
-			resultString = BaseHttpResponse.getInstance().convertResponseToString(result);
-			
-			if(mResultType == BaseConsts.RESULT_TYPE_JSON){
-				mCallback.onRequestResult(BaseHttpResponse.getInstance().convertStringToJSONObject(resultString), BaseConsts.RESULT_TYPE_JSON);
-			} else {
-				mCallback.onRequestResult(BaseHttpResponse.getInstance().convertStringToXml(resultString), BaseConsts.RESULT_TYPE_XML);
-			}
+		if(mResultType == BaseConsts.RESULT_TYPE_JSON){
+			mCallback.onRequestResult(result, BaseConsts.RESULT_TYPE_JSON);
 		} else {
-			mCallback.onRequestError(http_status_code);
+			mCallback.onRequestResult(result, BaseConsts.RESULT_TYPE_XML);
 		}
     }
 }

@@ -34,20 +34,21 @@ public class BaseHttpResponse {
 	
 	public String convertResponseToString(HttpResponse response) {
 		try	{
-			
 			String line = null;
 			StringBuilder responseString = new StringBuilder();
+			
 			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			
 			while((line = br.readLine()) != null) {
 				responseString.append(line);
 			}
 			br.close();
+			
 			return responseString.toString();
 			
 		} catch (Exception e)
 		{
-			Log.e("Error", "convert error");
+			Log.e("Error", "convert error in convertResponseToString");
 		}
 
 		return null;
@@ -55,12 +56,11 @@ public class BaseHttpResponse {
 
 	public JSONObject convertStringToJSONObject(String response) {
 		try {
-			
 			JSONObject jsonObject = new JSONObject(response);
 			return jsonObject;
 			
 		} catch (Exception e) {
-			Log.e("Error", "convert error");
+			Log.e("Error", "convert error in convertStringToJSONObject");
 		}
 
 		return null;
@@ -77,7 +77,7 @@ public class BaseHttpResponse {
 			return doc;
 			
 		} catch (Exception e) {
-			
+			Log.e("Error", "convert error in convertStringToXml");
 		}
 		
 		return null;

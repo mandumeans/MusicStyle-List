@@ -13,19 +13,29 @@ import android.os.Bundle;
 
 public class MainActivity extends FragmentActivity implements OnRequestInterFace{
 
-	BaseAsyncTask connectVender;
+	private BaseAsyncTask connectVender;
 	
-	String getJsonUrl = "http://api.soundcloud.com/playlists/405726.json";
-	String getXmlUrl = "http://api.soundcloud.com/playlists/405726";
-	String getParameter = "client_id=a2b4d87e3bac428d8467d6ea343d49ae";
+	private String getJsonUrl = "http://api.soundcloud.com/playlists/405726.json";
+	private String getXmlUrl = "http://api.soundcloud.com/playlists/405726";
+	private String getParameter = "client_id=a2b4d87e3bac428d8467d6ea343d49ae";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		connectVender = new BaseAsyncTask(this, this);		
+		connectVender = new BaseAsyncTask(this, this);
+	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
 		connectVender.execute();
+	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
 	}
 
 	@Override
@@ -35,12 +45,12 @@ public class MainActivity extends FragmentActivity implements OnRequestInterFace
 
 	@Override
 	public int getResultType() {
-		return BaseConsts.RESULT_TYPE_JSON;
+		return BaseConsts.RESULT_TYPE_XML;
 	}
 
 	@Override
 	public String onRequestGetUrl() {
-		return getJsonUrl;
+		return getXmlUrl;
 	}
 
 	@Override
@@ -66,6 +76,7 @@ public class MainActivity extends FragmentActivity implements OnRequestInterFace
 
 	@Override
 	public void onRequestError(int errorType) {
+		onRequestCancle();
 	}
 
 	@Override
