@@ -16,6 +16,8 @@ using Google.GData.Extensions;
 using Google.GData.YouTube;
 using Google.GData.Extensions.MediaRss;
 using Google.YouTube;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MusicList
 {
@@ -59,20 +61,40 @@ namespace MusicList
         public static string YoutubeKeywordSearch(string keyword)
         {
             const string FAIL_STRING = "False";
+            string url = "http://gdata.youtube.com/feeds/api/videos?q=" + keyword + "&max-results=10&alt=jsonc&v=2";
             try
             {
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load("https://gdata.youtube.com/feeds/api/videos?q=" + keyword + "&v=2");
+                //http://gdata.youtube.com/feeds/api/videos?q=jazz&max-results=10&alt=jsonc&v=2
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                //var xmlDoc = new XmlDocument();
+                //xmlDoc.Load("https://gdata.youtube.com/feeds/api/videos?q=" + keyword + "&max-results=10&alt=jsonc&v=2");
+
+                JObject obj = JObject.Parse(JObject.Parse(result).ToString());
+                JArray array = JArray.Parse(obj["data"].ToString());
                 ArrayList alNewDataList = new ArrayList();
-                XmlNodeList title = xmlDoc.GetElementsByTagName("title");
                 int cnt = 1;
-                foreach (XmlNode ADDR_SET in title)
+                //XmlNodeList title = xmlDoc.GetElementsByTagName("title");
+                //XmlNodeList id = xmlDoc.GetElementsByTagName("id");
+                //foreach (XmlNode ADDR_SET in title)
+                //{
+                //    foreach (XmlNode child in ADDR_SET.ChildNodes)
+                //    {
+                //        alNewDataList.Add(child.InnerText);
+                //    }
+                //}
+                foreach (JObject item in array)
                 {
-                    foreach (XmlNode child in ADDR_SET.ChildNodes)
-                    {
-                        alNewDataList.Add(child.InnerText);
-                    }
+                    alNewDataList.Add(item["title"].ToString());
                 }
+
                 StringBuilder sb = new StringBuilder();
                 JavaScriptSerializer jparser = new JavaScriptSerializer();
                 jparser.Serialize(alNewDataList, sb);
