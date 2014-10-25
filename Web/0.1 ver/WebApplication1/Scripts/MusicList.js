@@ -15,36 +15,59 @@ var MUSICLIST = {
             var UrlInput = document.getElementById('txtURLInput').value;
             var nowVID = FindUrlVideoID(UrlInput);
 
-            if (!YoutubeVideoURLValidation(UrlInput)) {
-                alert('Invalid URL');
-                return;
-            }
-
-            if (!isVIDExist(nowVID)) {
-                alert('Already exists');
-                return;
-            }
-
-            $.ajax({
-                url: "../MusicList.aspx/YoutubeURLValidation",
-                type: "POST",
-                data: '{"VID" : "' + nowVID + '"}',
-                contentType: "application/json",
-                dataType: "JSON",
-                timeout: 10000,
-                success: function (result) {
-                    var rawResult = jQuery.parseJSON(result).d;
-                    if (rawResult === 'False') {
-                        alert('There is no video on that URL');
-                    }
-                    else {
-                        AddNewVideoItem(VideoType.YouTube, UrlInput, rawResult);
-                    }
-                },
-                error: function (result) {
-                    return result;
+            if (YoutubeVideoURLValidation(UrlInput)) {
+                //Youtube video
+                if (!isVIDExist(nowVID)) {
+                    alert('Already exists');
+                    return;
                 }
-            }); //ajax end
+
+                $.ajax({
+                    url: "../MusicList.aspx/YoutubeURLValidation",
+                    type: "POST",
+                    data: '{"VID" : "' + nowVID + '"}',
+                    contentType: "application/json",
+                    dataType: "JSON",
+                    timeout: 10000,
+                    success: function (result) {
+                        var rawResult = jQuery.parseJSON(result).d;
+                        if (rawResult === 'False') {
+                            alert('There is no video on that URL from Youtube');
+                        }
+                        else {
+                            AddNewVideoItem(VideoType.YouTube, UrlInput, rawResult);
+                        }
+                    },
+                    error: function (result) {
+                        return result;
+                    }
+                }); //ajax end
+            }
+            else {
+                //Soundcloud video
+                $.ajax({
+                    url: "../MusicList.aspx/SoundcloudURLValidation",
+                    type: "POST",
+                    data: '{"URL" : "' + UrlInput + '"}',
+                    contentType: "application/json",
+                    dataType: "JSON",
+                    timeout: 10000,
+                    success: function (result) {
+                        var rawResult = jQuery.parseJSON(result).d;
+                        if (rawResult === 'False') {
+                            alert('There is no video on that URL from Soundcloud');
+                        }
+                        else {
+                            AddNewVideoItem(VideoType.SoundCloud, UrlInput, rawResult);
+                        }
+                    },
+                    error: function (result) {
+                        return result;
+                    }
+                }); //ajax end
+            }
+
+
         }); //btnURLInput click event end
         $('#btnSearchInput').click(function () {
             var UrlInput = document.getElementById('btnSearchInput').value;
@@ -58,13 +81,52 @@ var MUSICLIST = {
                 dataType: "JSON",
                 timeout: 10000,
                 success: function (result) {
-                    console.log(result);
                     var rawResult = jQuery.parseJSON(jQuery.parseJSON(result).d);
                     if (rawResult === 'False') {
                         alert('There is no video on that URL');
                     }
                     else {
                         console.log(rawResult);
+                        //for(resultOne in rawResult){
+                        for (var i = 0; i < rawResult.length; i++) {
+                            console.log(jQuery.parseJSON(rawResult[i]).id);
+                            console.log(jQuery.parseJSON(rawResult[i]).title);
+                            console.log(jQuery.parseJSON(rawResult[i]).thumbnail.sqDefault);
+                            console.log(jQuery.parseJSON(rawResult[i]).thumbnail.hqDefault);
+                            console.log(jQuery.parseJSON(rawResult[i]).viewCount);
+                            console.log(jQuery.parseJSON(rawResult[i]).duration);
+                        }
+                    }
+                },
+                error: function (result) {
+                    console.log(result);
+                    return result;
+                }
+            }); //ajax end
+
+            $.ajax({
+                url: "../MusicList.aspx/SoundcloudKeywordSearch",
+                type: "POST",
+                data: '{"keyword" : "' + searchKeyword + '"}',
+                contentType: "application/json",
+                dataType: "JSON",
+                timeout: 10000,
+                success: function (result) {
+                    var rawResult = jQuery.parseJSON(jQuery.parseJSON(result).d);
+                    if (rawResult === 'False') {
+                        alert('There is no video on that URL');
+                    }
+                    else {
+                        console.log(rawResult);
+                        //for(resultOne in rawResult){
+                        for (var i = 0; i < rawResult.length; i++) {
+                            console.log(jQuery.parseJSON(rawResult[i]).id);
+                            console.log(jQuery.parseJSON(rawResult[i]).title);
+                            console.log(jQuery.parseJSON(rawResult[i]).duration);
+                            console.log(jQuery.parseJSON(rawResult[i]).stream_url);
+                            console.log(jQuery.parseJSON(rawResult[i]).artwork_url);
+                            console.log(jQuery.parseJSON(rawResult[i]).playback_count);
+                        }
                     }
                 },
                 error: function (result) {
