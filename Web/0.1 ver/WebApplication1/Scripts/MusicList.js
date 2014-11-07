@@ -1,7 +1,8 @@
 ﻿
-var VideoType = Object.freeze({ "YouTube": 1, "SoundCloud": 2 });
+var VideoType = Object.freeze({ 'YouTube': 1, 'SoundCloud': 2 });
 var repeatable = true;
-var nextVideoVID;
+var nextVideoURL;
+
 
 //This code loads the IFrame Player API code asynchronously.
 var tag = document.createElement('script');
@@ -27,16 +28,16 @@ var Util = {
 
 var Youtube = {
     //Client Youtube URL validation
-    VideoURLValidation : function (UrlInput) {
+    VideoURLValidation: function (UrlInput) {
         var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
         return (UrlInput.match(p)) ? RegExp.$1 : false;
     },
     //Find youtube video id from URL
-    FindUrlVideoID : function (url) {
+    FindUrlVideoID: function (url) {
         return url.substring(url.indexOf("v=") + 2, url.length);
     },
     //Client Youtube validation
-    isVIDExist : function (VID) {
+    isVIDExist: function (VID) {
         if ($('.musicListItem[vid="' + VID + '"]').length < 1) {
             return true;
         } else {
@@ -44,16 +45,17 @@ var Youtube = {
         }
     },
     //video ended go to next video
-    onVideoEnded : function (VID) {
+    onVideoEnded: function (VID) {
         var nextMusicVID = MUSICLIST.getNextVideo(VID);
         if (nextMusicVID !== null) {
             Youtube.PlayYoutubeVideo(nextMusicVID);
         }
     },
-    PlayYoutubeVideo : function (VID) {
+    PlayYoutubeVideo: function (URL) {
+        var VID = Youtube.FindUrlVideoID(URL);
         //Change isPlaying status attribue
-        MUSICLIST.playingStatusChange(VID);
-    
+        MUSICLIST.playingStatusChange(URL);
+
         //if there is video already, delete that one and make new division
         if ($('.video').find('iframe').length > 0) {
             $('.video').find('iframe').remove();
@@ -196,54 +198,54 @@ var MUSICLIST = {
 
         $('#btnClearList').click(function () {
             $('.musicListItem').remove();
-            nextVideoVID = null;
+            nextVideoURL = null;
         });
     },
     AddNewVideoItem: function (type, url, title) {
         var videoItemType;
-        var vid = Youtube.FindUrlVideoID(url);
-        if (type === VideoType.YouTube) {
-            videoItemType = "YouTube";
-        } else if (type === VideoType.SoundCloud) {
-            videoItemType = "SoundCloud";
-        }
-        $('#playlist').append('<li class="musicListItem" type="' + videoItemType + '" vid = "' + vid + '" isPlaying = "false"><span class="musicItemTitle">' + title + '</span><a class="musicItemRemove">X</a></li>');
+        //var vid = Youtube.FindUrlVideoID(url);
+        $('#playlist').append('<li class="musicListItem" type="' + type + '" url = "' + url + '" isPlaying = "false"><span class="musicItemTitle">' + title + '</span><a class="musicItemRemove">X</a></li>');
         $('.musicItemTitle').click(function () {
-            Youtube.PlayYoutubeVideo($(this).parent().attr('vid'));
+            if ($(this).parent().attr('type') == VideoType.YouTube) {
+                //Youtube
+                Youtube.PlayYoutubeVideo($(this).parent().attr('url'));
+            } else {
+                //SoundCloud
+            }
         });
         $('.musicItemRemove').click(function () {
-            MUSICLIST.DeleteVideoFromList($(this).parent().attr('vid'));
+            MUSICLIST.DeleteVideoFromList($(this).parent().attr('url'));
         });
     },
-    DeleteVideoFromList: function (VID) {
-        nextVideoVID = MUSICLIST.getNextVideo(VID);
-        $('.musicListItem[vid="' + VID + '"]').remove();
+    DeleteVideoFromList: function (URL) {
+        nextVideoURL = MUSICLIST.getNextVideo(URL);
+        $('.musicListItem[url="' + URL + '"]').remove();
     },
     //Change isPlaying status attribue
-    playingStatusChange: function (VID) {
+    playingStatusChange: function (URL) {
         $('.musicListItem[isPlaying="true"]').attr('isPlaying', 'false').removeClass('musicPlaying');
-        $('.musicListItem[vid="' + VID + '"]').attr('isPlaying', 'true').addClass('musicPlaying');
+        $('.musicListItem[url="' + URL + '"]').attr('isPlaying', 'true').addClass('musicPlaying');
     },
 
-    getNextVideo: function (VID) {
-        var nextMusicVID = null;
+    getNextVideo: function (URL) {
+        var nextMusicURL = null;
 
         //There is no now playing video (playing video has been deleted)
         if ($('.musicListItem[isPlaying="true"]').length < 1) {
             if ($('.musicListItem').length > 0) {
-                nextMusicVID = nextVideoVID;    //when video is deleted, next Video VID is saved;
+                nextMusicURL = nextVideoURL;    //when video is deleted, next Video VID is saved;
             }
         }
         else {
-            nextMusicVID = $('.musicListItem[vid="' + VID + '"]').next('li').attr('vid');
-            if (nextMusicVID === null) {
+            nextMusicURL = $('.musicListItem[url="' + URL + '"]').next('li').attr('url');
+            if (nextMusicURL === null) {
                 if (repeatable === true) {
                     //it's last list item and repeatable -> go to first song
-                    nextMusicVID = $('.musicListItem').first().attr('vid');
+                    nextMusicURL = $('.musicListItem').first().attr('url');
                 }
             }
         }
-        return nextMusicVID;
+        return nextMusicURL;
     }
 }
 
