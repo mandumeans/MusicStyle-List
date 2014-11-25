@@ -2,6 +2,7 @@
 var VideoType = Object.freeze({ 'YouTube': 1, 'SoundCloud': 2 });
 var repeatable = true;
 var nextVideoURL;
+var SOUNDCLOUD_CLIENT_KEY = "a2b4d87e3bac428d8467d6ea343d49ae";
 
 
 //This code loads the IFrame Player API code asynchronously.
@@ -45,11 +46,8 @@ var Youtube = {
         }
     },
     //video ended go to next video
-    onVideoEnded: function (VID) {
-        var nextMusicVID = MUSICLIST.getNextVideo(VID);
-        if (nextMusicVID !== null) {
-            Youtube.PlayYoutubeVideo(nextMusicVID);
-        }
+    onVideoEnded: function (URL) {
+        MUSICLIST.playNextVideo(URL);
     },
     PlayYoutubeVideo: function (URL) {
         var VID = Youtube.FindUrlVideoID(URL);
@@ -82,7 +80,7 @@ var Youtube = {
         var done = false;
         function onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.ENDED && !done) {
-                Youtube.onVideoEnded(VID);
+                Youtube.onVideoEnded(URL);
                 done = true;
             }
         } //onPlayerStateChange
@@ -92,7 +90,31 @@ var Youtube = {
 }
 
 var Soundcloud = {
+    PlaySoundcloudVideo: function (URL) {
+        //Change isPlaying status attribue
+        MUSICLIST.playingStatusChange(URL);
 
+        //if there is video already, delete that one and make new division
+        if ($('.video').find('iframe').length > 0) {
+            $('.video').find('iframe').remove();
+        }
+
+        $('.video').append('<iframe id="sc-widget" src="" width="100%" height="465" scrolling="no" frameborder="no"></iframe>');
+
+        var widgetIframe = document.getElementById('sc-widget');
+        widgetIframe.src = 'https://w.soundcloud.com/player/?url=' + URL + '&amp;auto_play=true';
+
+        var widget = SC.Widget(widgetIframe);
+
+        widget.bind(SC.Widget.Events.FINISH, function () {
+            Soundcloud.onVideoEnded(URL);
+        });
+    },
+
+    //video ended go to next video
+    onVideoEnded: function (URL) {
+        MUSICLIST.playNextVideo(URL);
+    }
 }
 
 var MUSICLIST = {
@@ -105,7 +127,7 @@ var MUSICLIST = {
 
                 Util.ajaxHelper('../MusicList.aspx/YoutubeURLValidation', '{"VID" : "' + nowVID + '"}',
                     function (result) {
-                        var rawResult = jQuery.parseJSON(result).d;
+                        var rawResult = result.d;
                         if (rawResult === 'False') {
                             alert('There is no video on that URL from Youtube');
                         }
@@ -129,12 +151,14 @@ var MUSICLIST = {
                 //Soundcloud video
                 Util.ajaxHelper('../MusicList.aspx/SoundcloudURLValidation', '{"URL" : "' + UrlInput + '"}',
                     function (result) {
-                        var rawResult = jQuery.parseJSON(result).d;
+                        var rawResult = result.d;
                         if (rawResult === 'False') {
                             alert('There is no video on that URL from Soundcloud');
                         }
                         else {
-                            MUSICLIST.AddNewVideoItem(VideoType.SoundCloud, UrlInput, rawResult);
+                            var titleResult = jQuery.parseJSON(rawResult).title;
+                            var uriResult = jQuery.parseJSON(rawResult).uri;
+                            MUSICLIST.AddNewVideoItem(VideoType.SoundCloud, uriResult, titleResult);
                         }
                     },
                     function (result) {
@@ -149,12 +173,13 @@ var MUSICLIST = {
 
             Util.ajaxHelper('../MusicList.aspx/YoutubeKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
                 function (result) {
-                    var rawResult = jQuery.parseJSON(jQuery.parseJSON(result).d);
+                    var rawResult = jQuery.parseJSON(result.d);
                     if (rawResult === 'False') {
                         alert('There is no video on that URL');
                     }
                     else {
                         console.log(rawResult);
+                        $('#searchModal').modal();
                         //for(resultOne in rawResult){
                         for (var i = 0; i < rawResult.length; i++) {
                             console.log(jQuery.parseJSON(rawResult[i]).id);
@@ -173,7 +198,7 @@ var MUSICLIST = {
 
             Util.ajaxHelper('../MusicList.aspx/SoundcloudKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
                 function (result) {
-                    var rawResult = jQuery.parseJSON(jQuery.parseJSON(result).d);
+                    var rawResult = jQuery.parseJSON(result.d);
                     if (rawResult === 'False') {
                         alert('There is no video on that URL');
                     }
@@ -200,6 +225,12 @@ var MUSICLIST = {
             $('.musicListItem').remove();
             nextVideoURL = null;
         });
+
+        $("#txtSearchInput").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $('#btnSearchInput').click();
+            }
+        });
     },
     AddNewVideoItem: function (type, url, title) {
         var videoItemType;
@@ -211,6 +242,7 @@ var MUSICLIST = {
                 Youtube.PlayYoutubeVideo($(this).parent().attr('url'));
             } else {
                 //SoundCloud
+                Soundcloud.PlaySoundcloudVideo($(this).parent().attr('url'));
             }
         });
         $('.musicItemRemove').click(function () {
@@ -246,6 +278,19 @@ var MUSICLIST = {
             }
         }
         return nextMusicURL;
+    },
+
+    playNextVideo: function (exURL) {
+        var nextMusicURL = MUSICLIST.getNextVideo(exURL);
+        var nextMusicType = $('.musicListItem[url="' + nextMusicURL + '"]').attr('type');
+
+        if (nextMusicType == VideoType.YouTube) {
+            Youtube.PlayYoutubeVideo(nextMusicURL);
+        } else if (nextMusicType == VideoType.SoundCloud) {
+            Soundcloud.PlaySoundcloudVideo(nextMusicURL);
+        } else {
+            console.log('There is no video to play');
+        }
     }
 }
 

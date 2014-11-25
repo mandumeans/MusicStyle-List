@@ -59,6 +59,12 @@ namespace MusicList
             }
         }
 
+        public class SoundcloudValidationData
+        {
+            public string title { get; set; }
+            public string uri { get; set; }
+        }
+
         [WebMethod]
         public static string SoundcloudURLValidation(string URL)
         {
@@ -83,7 +89,14 @@ namespace MusicList
                         stream.Close();
                         response.Close();
                         JObject parsedResult = JObject.Parse(result);
-                        return parsedResult["title"].ToString();
+
+                        SoundcloudValidationData SVD = new SoundcloudValidationData
+                        {
+                            title = parsedResult["title"].ToString(),
+                            uri = parsedResult["uri"].ToString()
+                        };
+
+                        return JsonConvert.SerializeObject(SVD, Newtonsoft.Json.Formatting.Indented).ToString();
                     }
                 }
             }

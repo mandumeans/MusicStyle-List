@@ -5,7 +5,7 @@ body
 {
     background: #b6b7bc;
     font-size: .80em;
-    font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, Verdana, sans-serif;
+    /*font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, Verdana, sans-serif;*/
     margin: 0px;
     padding: 0px;
     color: #696969;
@@ -40,7 +40,7 @@ body
 #listLeft
 {
     display:inline;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    /* font-family: "Comic Sans MS", cursive, sans-serif;*/
     width:70%;
     height: 1000px;
     float:left;
@@ -49,7 +49,7 @@ body
 #listRight
 {
     display:inline;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    /*font-family: "Comic Sans MS", cursive, sans-serif;*/
     width:30%;
     height: 1000px;
     float:right;
@@ -89,10 +89,6 @@ div.title h1
 /* listLeft
 ----------------------------------------------------------*/
 
-#txtURLInput
-{
-    width: 300px;
-}
 
 /* listRight
 ----------------------------------------------------------*/
