@@ -62,10 +62,22 @@ var Youtube = {
 
         var player;
         onYouTubeIframeAPIReady = function () {
+            //     height: '315',
+            //width: '560',
             player = new YT.Player('player', {
-                height: '315',
-                width: '560',
                 videoId: VID,
+                width: $('.video').css('width'),
+                height: $('.video').css('height'),
+                playerVars: {
+                    controls: 0,
+                    enablejsapi: 1,
+                    rel: 0,
+                    showinfo: 0,
+                    autohide: 0,
+                    modestbranding: 1,
+                    theme: 'light',
+                    wmode: 'transparent'
+                },
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChange
@@ -86,6 +98,13 @@ var Youtube = {
         } //onPlayerStateChange
 
         onYouTubeIframeAPIReady();
+    },
+
+    Pause: function (URL) {
+        $('#player')[0].contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');
+    },
+    start: function () {
+        $('#player').playVideo();
     }
 }
 
@@ -114,11 +133,88 @@ var Soundcloud = {
     //video ended go to next video
     onVideoEnded: function (URL) {
         MUSICLIST.playNextVideo(URL);
+    },
+    
+    Pause : function (URL) {
+        
     }
 }
 
+var PlayingType = Object.freeze({ 'playing': 1, 'paused': 2 });
+var MusicPlayer = {
+
+    init: function () {
+        $("#seekSlider").slider();
+        $('.play').on('click', function () {
+            MusicPlayer.onPauseClicked();
+        });
+    },
+
+    playInit: function () {
+
+    },
+
+    onPauseClicked: function () {
+        if ($('.musicListItem[isPlaying="true"]').length < 1) {
+            //error
+
+        } else {
+            var nowMusicURL = $('.musicListItem[isPlaying="true"]').attr('url');
+            var nowMusicType = $('.musicListItem[isPlaying="true"]').attr('type');
+
+            if (nowMusicType == VideoType.YouTube) {
+                Youtube.Pause(nowMusicURL);
+            } else if (nowMusicType == VideoType.SoundCloud) {
+                Soundcloud.Pause(nowMusicURL);
+            } else {
+                console.log('There is no video to play');
+            }
+        }
+    }
+}
+
+var rightListStatus;
+
 var MUSICLIST = {
     init: function () {
+        $('#listRight').hide();
+        rightListStatus = false;
+
+        $(window).resize(function () {
+            if ($('.video').find('iframe').length > 0) {
+                $('.video').find('iframe').css('width',$('.video').css('width'))
+                $('.video').find('iframe').css('height', $('.video').css('height'))
+            }
+        });
+
+        $(document).mousemove(function (e) {
+            var pageWidth = $('html').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
+            var pageHeight = $('html').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
+            var rightListWidth = $('#listRight').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
+            var rightListHeight = $('#listRight').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
+
+            if ($('.video').find('iframe').length > 0) {
+                if ($('.video').find('iframe').css('pointer-events') == 'auto') {
+                    $('.video').find('iframe').css('pointer-events', 'none');
+                }
+            }
+            //width 80%~100%
+            //height 13%~68%
+            if (rightListStatus == true) {
+                if (e.pageX < (pageWidth - rightListWidth - 50)) {
+                    //right list로부터 벗어남
+                    $('#listRight').hide();
+                    rightListStatus = false;
+                }
+            }
+
+            if ((((e.pageX / pageWidth) > 0.8) && (((e.pageY / pageHeight) > 0.13) && ((e.pageY / pageHeight) < 0.68))) && rightListStatus == false) {
+                $('#listRight').show();
+                rightListStatus = true;
+            }
+        });
+
+
         $('#btnURLInput').click(function () {
             var UrlInput = document.getElementById('txtURLInput').value;
             var nowVID = Youtube.FindUrlVideoID(UrlInput);
@@ -295,5 +391,6 @@ var MUSICLIST = {
 }
 
 $(document).ready(function () {
-    MUSICLIST.init();    
+    MUSICLIST.init();
+    MusicPlayer.init();
 });

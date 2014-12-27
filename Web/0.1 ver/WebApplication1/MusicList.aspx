@@ -8,6 +8,7 @@
     <script src="http://connect.soundcloud.com/sdk.js"></script>
     <script src="Scripts/bootstrap.min.js"></script>
     <link href="Styles/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="True">        
@@ -18,6 +19,18 @@
                 <div id="player">
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="player">
+        <div class="playerControl">
+            <div id="seekSlider" class="seeker"></div>
+            <a class="ToLeft"><img src="images/ToLeft.png" alt="toLeft"/></a>
+            <a class="leftwind"><img src="images/leftwind.png" alt="left"/></a>
+            <a class="play"><img src="images/play.png" alt="play"/></a>
+            <a class="pause"><img src="images/pause.png" style="display:none;" alt="pause"/></a>
+            <a class="rightwind"><img src="images/rightwind.png" alt="right"/></a>
+            <a class="ToRight"><img src="images/ToRight.png" alt="toRight"/></a>
+
         </div>
     </div>
     <div id="listRight">
