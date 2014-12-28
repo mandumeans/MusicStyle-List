@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/linearlayout_top"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1.0"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+    	
+        <TextView 
+            android:id="@+id/textview_current_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:gravity="center_horizontal"/>
+        
+        <SeekBar 
+            android:id="@+id/progressbar_play_control"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"/>
+        
+        <TextView 
+            android:id="@+id/textview_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:gravity="center_horizontal"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:id="@+id/linearlayout_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearlayout_top"
+        android:weightSum="10"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dip">
+        
+        <ImageButton 
+            android:id="@+id/imagebutton_repeatbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:scaleType="fitXY"/>
+        
+        <ImageButton 
+            android:id="@+id/imagebutton_prevbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:scaleType="fitXY"/>
+        
+        <ImageButton 
+            android:id="@+id/imagebutton_playbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:scaleType="fitXY"/>
+        
+        <ImageButton 
+            android:id="@+id/imagebutton_nextbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:scaleType="fitXY"/>
+        
+        <ImageButton 
+            android:id="@+id/imagebutton_sufflebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:scaleType="fitXY"/>
+        
+    </LinearLayout>
+
+</RelativeLayout>
