@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MusicStyleList</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    
+    <!-- action bar -->
+    <string name="action_search">search</string>
+    <string name="action_spinner">spinner</string>
+    
+    <!-- pull to loading -->
+    <string name="pull_to_refresh_loading">loading more item</string>
+
+    <!-- empty list -->
+    <string name="empty_list">empty list\n please search</string>
+</resources>
