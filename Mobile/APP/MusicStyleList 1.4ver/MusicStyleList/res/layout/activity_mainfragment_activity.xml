@@ -1,0 +1,59 @@
+<android.support.v4.widget.DrawerLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:slidedrawer="http://schemas.android.com/apk/res/com.funny.developers.musicstylelist"
+    android:id="@+id/navigation_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/mainfragment_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <android.support.v4.view.PagerTitleStrip
+                style="@style/viepagertitlestrip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top" />
+        </android.support.v4.view.ViewPager>
+
+        <FrameLayout
+            android:id="@+id/play_list_detail_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.funny.developers.musicstylelist.view.CustomSlidingDrawer
+            android:id="@+id/media_player_drawer_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            slidedrawer:content="@+id/media_player_layout"
+           	slidedrawer:handle="@+id/media_palyer_handle"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@id/media_palyer_handle"
+                android:layout_width="50dip"
+                android:layout_height="50dip" />
+
+            <FrameLayout
+                android:id="@id/media_player_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.funny.developers.musicstylelist.view.CustomSlidingDrawer>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/navigation_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#ffffff"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
+
+</android.support.v4.widget.DrawerLayout>
