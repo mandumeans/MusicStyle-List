@@ -8,3 +8,13 @@ C:\Users\park\gitproject\MyMusicList\Web\0.1 ver\WebApplication1\bin\Newtonsoft.
 C:\Users\park\gitproject\MyMusicList\Web\0.1 ver\WebApplication1\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\park\gitproject\MyMusicList\Web\0.1 ver\WebApplication1\obj\Debug\WebApplication1.dll
 C:\Users\park\gitproject\MyMusicList\Web\0.1 ver\WebApplication1\obj\Debug\WebApplication1.pdb
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\bin\WebApplication1.dll
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\bin\WebApplication1.pdb
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\bin\Google.GData.Analytics.dll
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\bin\Google.GData.Client.dll
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\bin\Google.GData.Extensions.dll
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\bin\Google.GData.YouTube.dll
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\bin\Newtonsoft.Json.dll
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\obj\Debug\WebApplication1.csprojResolveAssemblyReference.cache
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\obj\Debug\WebApplication1.dll
+C:\Users\PARK\gitRepository\WebApplication1\Web\0.1 ver\WebApplication1\obj\Debug\WebApplication1.pdb

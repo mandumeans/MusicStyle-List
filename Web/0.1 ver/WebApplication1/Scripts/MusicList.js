@@ -4,6 +4,7 @@ var repeatable = true;
 var nextVideoURL;
 var SOUNDCLOUD_CLIENT_KEY = "a2b4d87e3bac428d8467d6ea343d49ae";
 
+var YTPlayer;
 
 //This code loads the IFrame Player API code asynchronously.
 var tag = document.createElement('script');
@@ -27,157 +28,15 @@ var Util = {
     }
 }
 
-var Youtube = {
-    //Client Youtube URL validation
-    VideoURLValidation: function (UrlInput) {
-        var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-        return (UrlInput.match(p)) ? RegExp.$1 : false;
-    },
-    //Find youtube video id from URL
-    FindUrlVideoID: function (url) {
-        return url.substring(url.indexOf("v=") + 2, url.length);
-    },
-    //Client Youtube validation
-    isVIDExist: function (VID) {
-        if ($('.musicListItem[vid="' + VID + '"]').length < 1) {
-            return true;
-        } else {
-            return false;
-        }
-    },
-    //video ended go to next video
-    onVideoEnded: function (URL) {
-        MUSICLIST.playNextVideo(URL);
-    },
-    PlayYoutubeVideo: function (URL) {
-        var VID = Youtube.FindUrlVideoID(URL);
-        //Change isPlaying status attribue
-        MUSICLIST.playingStatusChange(URL);
-
-        //if there is video already, delete that one and make new division
-        if ($('.video').find('iframe').length > 0) {
-            $('.video').find('iframe').remove();
-            $('.video').append('<div id="player"></div>');
-        }
-
-        var player;
-        onYouTubeIframeAPIReady = function () {
-            //     height: '315',
-            //width: '560',
-            player = new YT.Player('player', {
-                videoId: VID,
-                width: $('.video').css('width'),
-                height: $('.video').css('height'),
-                playerVars: {
-                    controls: 0,
-                    enablejsapi: 1,
-                    rel: 0,
-                    showinfo: 0,
-                    autohide: 0,
-                    modestbranding: 1,
-                    theme: 'light',
-                    wmode: 'transparent'
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }   //events
-            }); //player
-        }   //onYoutubeIframeAPIReady
-
-        function onPlayerReady(event) {
-            event.target.playVideo();
-        }
-
-        var done = false;
-        function onPlayerStateChange(event) {
-            if (event.data == YT.PlayerState.ENDED && !done) {
-                Youtube.onVideoEnded(URL);
-                done = true;
-            }
-        } //onPlayerStateChange
-
-        onYouTubeIframeAPIReady();
-    },
-
-    Pause: function (URL) {
-        $('#player')[0].contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');
-    },
-    start: function () {
-        $('#player').playVideo();
-    }
-}
-
-var Soundcloud = {
-    PlaySoundcloudVideo: function (URL) {
-        //Change isPlaying status attribue
-        MUSICLIST.playingStatusChange(URL);
-
-        //if there is video already, delete that one and make new division
-        if ($('.video').find('iframe').length > 0) {
-            $('.video').find('iframe').remove();
-        }
-
-        $('.video').append('<iframe id="sc-widget" src="" width="100%" height="465" scrolling="no" frameborder="no"></iframe>');
-
-        var widgetIframe = document.getElementById('sc-widget');
-        widgetIframe.src = 'https://w.soundcloud.com/player/?url=' + URL + '&amp;auto_play=true';
-
-        var widget = SC.Widget(widgetIframe);
-
-        widget.bind(SC.Widget.Events.FINISH, function () {
-            Soundcloud.onVideoEnded(URL);
-        });
-    },
-
-    //video ended go to next video
-    onVideoEnded: function (URL) {
-        MUSICLIST.playNextVideo(URL);
-    },
-    
-    Pause : function (URL) {
-        
-    }
-}
 
 var PlayingType = Object.freeze({ 'playing': 1, 'paused': 2 });
-var MusicPlayer = {
 
-    init: function () {
-        $("#seekSlider").slider();
-        $('.play').on('click', function () {
-            MusicPlayer.onPauseClicked();
-        });
-    },
-
-    playInit: function () {
-
-    },
-
-    onPauseClicked: function () {
-        if ($('.musicListItem[isPlaying="true"]').length < 1) {
-            //error
-
-        } else {
-            var nowMusicURL = $('.musicListItem[isPlaying="true"]').attr('url');
-            var nowMusicType = $('.musicListItem[isPlaying="true"]').attr('type');
-
-            if (nowMusicType == VideoType.YouTube) {
-                Youtube.Pause(nowMusicURL);
-            } else if (nowMusicType == VideoType.SoundCloud) {
-                Soundcloud.Pause(nowMusicURL);
-            } else {
-                console.log('There is no video to play');
-            }
-        }
-    }
-}
 
 var rightListStatus;
 
 var MUSICLIST = {
     init: function () {
-        $('#listRight').hide();
+        //$('#listRight').hide();
         rightListStatus = false;
 
         $(window).resize(function () {
@@ -186,7 +45,7 @@ var MUSICLIST = {
                 $('.video').find('iframe').css('height', $('.video').css('height'))
             }
         });
-
+        /*
         $(document).mousemove(function (e) {
             var pageWidth = $('html').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
             var pageHeight = $('html').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
@@ -213,7 +72,7 @@ var MUSICLIST = {
                 rightListStatus = true;
             }
         });
-
+        */
 
         $('#btnURLInput').click(function () {
             var UrlInput = document.getElementById('txtURLInput').value;
@@ -375,6 +234,26 @@ var MUSICLIST = {
         }
         return nextMusicURL;
     },
+    getPreviousVideo: function (URL) {
+        var prevMusicURL = null;
+
+        //There is no now playing video (playing video has been deleted)
+        if ($('.musicListItem[isPlaying="true"]').length < 1) {
+            if ($('.musicListItem').length > 0) {
+                prevMusicURL = $('.musicListItem').first().attr("url");    //when video is deleted, first URL is saved.;
+            }
+        }
+        else {
+            prevMusicURL = $('.musicListItem[url="' + URL + '"]').prev('li').attr('url');
+            if (prevMusicURL === null) {
+                if (repeatable === true) {
+                    //it's last list item and repeatable -> go to first song
+                    prevMusicURL = $('.musicListItem').last().attr('url');
+                }
+            }
+        }
+        return prevMusicURL;
+    },
 
     playNextVideo: function (exURL) {
         var nextMusicURL = MUSICLIST.getNextVideo(exURL);
@@ -386,6 +265,19 @@ var MUSICLIST = {
             Soundcloud.PlaySoundcloudVideo(nextMusicURL);
         } else {
             console.log('There is no video to play');
+        }
+    },
+
+    playPreviousVideo: function (exURL) {
+        var prevMusicURL = MUSICLIST.getPreviousVideo(exURL);
+        var prevMusicType = $('.musicListItem[url="' + prevMusicURL + '"]').attr('type');
+
+        if (prevMusicType == VideoType.YouTube) {
+            Youtube.PlayYoutubeVideo(prevMusicURL);
+        } else if (prevMusicType == VideoType.SoundCloud) {
+            Soundcloud.PlaySoundcloudVideo(prevMusicURL);
+        } else {
+            console.log(prevMusicURL);
         }
     }
 }

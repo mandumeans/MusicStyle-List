@@ -3,6 +3,9 @@
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
     <script src="Scripts/MusicList.js"></script>
+    <script src="Scripts/musicPlayer.js"></script>
+    <script src="Scripts/soundcloud.js"></script>
+    <script src="Scripts/youtube.js"></script>
     <script src="Scripts/json2.js"></script>
     <script src="Scripts/SCWidgetAPI.js"></script>
     <script src="http://connect.soundcloud.com/sdk.js"></script>

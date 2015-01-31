@@ -77,8 +77,11 @@
     <Content Include="Scripts\jquery-1.11.1.min.js" />
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\MusicList.js" />
+    <Content Include="Scripts\musicPlayer.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\SCWidgetAPI.js" />
+    <Content Include="Scripts\soundcloud.js" />
+    <Content Include="Scripts\youtube.js" />
     <Content Include="Styles\bootstrap-theme.css" />
     <Content Include="Styles\bootstrap-theme.min.css" />
     <Content Include="Styles\bootstrap.css" />
