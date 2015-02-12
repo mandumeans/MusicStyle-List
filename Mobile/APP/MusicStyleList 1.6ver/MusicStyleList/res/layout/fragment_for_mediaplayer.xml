@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <com.funny.developers.musicstylelist.player.MusicStyleListMediaPlayerController 
+        android:id="@+id/media_player_controller"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"/>
+    
+    <SurfaceView
+        android:id="@+id/play_surface_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/media_player_controller" />
+
+</RelativeLayout>
