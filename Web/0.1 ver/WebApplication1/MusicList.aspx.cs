@@ -63,6 +63,7 @@ namespace MusicList
         {
             public string title { get; set; }
             public string uri { get; set; }
+            public string thumb { get; set; }
         }
 
         [WebMethod]
@@ -93,7 +94,8 @@ namespace MusicList
                         SoundcloudValidationData SVD = new SoundcloudValidationData
                         {
                             title = parsedResult["title"].ToString(),
-                            uri = parsedResult["uri"].ToString()
+                            uri = parsedResult["uri"].ToString(),
+                            thumb = parsedResult["artwork_url"].ToString()
                         };
 
                         return JsonConvert.SerializeObject(SVD, Newtonsoft.Json.Formatting.Indented).ToString();

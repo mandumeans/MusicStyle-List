@@ -41,36 +41,36 @@ var MUSICLIST = {
 
         $(window).resize(function () {
             if ($('.video').find('iframe').length > 0) {
-                $('.video').find('iframe').css('width',$('.video').css('width'))
+                $('.video').find('iframe').css('width', $('.video').css('width'))
                 $('.video').find('iframe').css('height', $('.video').css('height'))
             }
         });
         /*
         $(document).mousemove(function (e) {
-            var pageWidth = $('html').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
-            var pageHeight = $('html').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
-            var rightListWidth = $('#listRight').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
-            var rightListHeight = $('#listRight').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
+        var pageWidth = $('html').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
+        var pageHeight = $('html').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
+        var rightListWidth = $('#listRight').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
+        var rightListHeight = $('#listRight').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
 
-            if ($('.video').find('iframe').length > 0) {
-                if ($('.video').find('iframe').css('pointer-events') == 'auto') {
-                    $('.video').find('iframe').css('pointer-events', 'none');
-                }
-            }
-            //width 80%~100%
-            //height 13%~68%
-            if (rightListStatus == true) {
-                if (e.pageX < (pageWidth - rightListWidth - 50)) {
-                    //right list로부터 벗어남
-                    $('#listRight').hide();
-                    rightListStatus = false;
-                }
-            }
+        if ($('.video').find('iframe').length > 0) {
+        if ($('.video').find('iframe').css('pointer-events') == 'auto') {
+        $('.video').find('iframe').css('pointer-events', 'none');
+        }
+        }
+        //width 80%~100%
+        //height 13%~68%
+        if (rightListStatus == true) {
+        if (e.pageX < (pageWidth - rightListWidth - 50)) {
+        //right list로부터 벗어남
+        $('#listRight').hide();
+        rightListStatus = false;
+        }
+        }
 
-            if ((((e.pageX / pageWidth) > 0.8) && (((e.pageY / pageHeight) > 0.13) && ((e.pageY / pageHeight) < 0.68))) && rightListStatus == false) {
-                $('#listRight').show();
-                rightListStatus = true;
-            }
+        if ((((e.pageX / pageWidth) > 0.8) && (((e.pageY / pageHeight) > 0.13) && ((e.pageY / pageHeight) < 0.68))) && rightListStatus == false) {
+        $('#listRight').show();
+        rightListStatus = true;
+        }
         });
         */
 
@@ -93,7 +93,7 @@ var MUSICLIST = {
                                 alert('Already exists');
                                 return;
                             } else {
-                                MUSICLIST.AddNewVideoItem(VideoType.YouTube, UrlInput, rawResult);
+                                MUSICLIST.AddNewVideoItem(VideoType.YouTube, UrlInput, rawResult, '');
                             }
                         }
                     },
@@ -113,7 +113,8 @@ var MUSICLIST = {
                         else {
                             var titleResult = jQuery.parseJSON(rawResult).title;
                             var uriResult = jQuery.parseJSON(rawResult).uri;
-                            MUSICLIST.AddNewVideoItem(VideoType.SoundCloud, uriResult, titleResult);
+                            var thumbResult = jQuery.parseJSON(rawResult).thumb;
+                            MUSICLIST.AddNewVideoItem(VideoType.SoundCloud, uriResult, titleResult, thumbResult);
                         }
                     },
                     function (result) {
@@ -187,17 +188,17 @@ var MUSICLIST = {
             }
         });
     },
-    AddNewVideoItem: function (type, url, title) {
+    AddNewVideoItem: function (type, url, title, thumb) {
         var videoItemType;
         //var vid = Youtube.FindUrlVideoID(url);
-        $('#playlist').append('<li class="musicListItem" type="' + type + '" url = "' + url + '" isPlaying = "false"><span class="musicItemTitle">' + title + '</span><a class="musicItemRemove">X</a></li>');
+        $('#playlist').append('<li class="musicListItem" type="' + type + '" url = "' + url + '" thumb = "' + thumb + '" isPlaying = "false"><span class="musicItemTitle">' + title + '</span><a class="musicItemRemove">X</a></li>');
         $('.musicItemTitle').click(function () {
             if ($(this).parent().attr('type') == VideoType.YouTube) {
                 //Youtube
                 Youtube.PlayYoutubeVideo($(this).parent().attr('url'));
             } else {
                 //SoundCloud
-                Soundcloud.PlaySoundcloudVideo($(this).parent().attr('url'));
+                Soundcloud.PlaySoundcloudVideo($(this).parent().attr('url'), $(this).parent().attr('thumb'));
             }
         });
         $('.musicItemRemove').click(function () {
@@ -262,7 +263,7 @@ var MUSICLIST = {
         if (nextMusicType == VideoType.YouTube) {
             Youtube.PlayYoutubeVideo(nextMusicURL);
         } else if (nextMusicType == VideoType.SoundCloud) {
-            Soundcloud.PlaySoundcloudVideo(nextMusicURL);
+            Soundcloud.PlaySoundcloudVideo(nextMusicURL, $('.musicListItem[url="' + nextMusicURL + '"]').attr('thumb'));
         } else {
             console.log('There is no video to play');
         }
@@ -275,7 +276,7 @@ var MUSICLIST = {
         if (prevMusicType == VideoType.YouTube) {
             Youtube.PlayYoutubeVideo(prevMusicURL);
         } else if (prevMusicType == VideoType.SoundCloud) {
-            Soundcloud.PlaySoundcloudVideo(prevMusicURL);
+            Soundcloud.PlaySoundcloudVideo(prevMusicURL, $('.musicListItem[url="' + prevMusicURL + '"]').attr('thumb'));
         } else {
             console.log(prevMusicURL);
         }
