@@ -15,7 +15,6 @@ var MusicPlayer = {
         $("#seekSlider").on("slidechange", function (event, ui) {
             if (event.originalEvent) {
                 //manual change
-                console.log(ui.value + "," + YTPlayer.getCurrentTime());
                 MusicPlayer.seekToHere(ui.value);
             } else {
                 //programmatic change
@@ -23,14 +22,21 @@ var MusicPlayer = {
         });
 
         $("#seekSlider").mousedown(function () {
-            Youtube.seekbarEventEnd();
-            console.log("Adsf");
+            var nowMusicType = $('.musicListItem[isPlaying="true"]').attr('type');
+            if (nowMusicType == VideoType.YouTube) {
+                Youtube.seekbarEventEnd();
+            } else if (nowMusicType == VideoType.SoundCloud) {
+                Soundcloud.seekbarEventEnd();
+            }
         }).mouseup(function () {
-            console.log("Adsf2");
-            Youtube.seekbarEventStart();
+            var nowMusicType = $('.musicListItem[isPlaying="true"]').attr('type');
+            if (nowMusicType == VideoType.YouTube) {
+                Youtube.seekbarEventStart();
+            } else if (nowMusicType == VideoType.SoundCloud) {
+                Soundcloud.seekbarEventStart();
+            }
         }).mouseout(function () {
-            console.log("Adsf3");
-           // Youtube.seekbarEventStart();
+
         });
 
         $(".play").on("click", function () {
@@ -57,7 +63,7 @@ var MusicPlayer = {
         });
         $(".leftwind").mousedown(function () {
             var nowMusicURL = $('.musicListItem[isPlaying="true"]').attr('url');
-            timeout = setInterval(function () { MusicPlayer.seekTo(seekSec * -1) }, 10);
+            timeout = setInterval(function () { MusicPlayer.seekTo(seekSec * -1) }, 500);
         }).mouseup(function () {
             clearInterval(timeout);
             return false;
@@ -82,7 +88,7 @@ var MusicPlayer = {
                 Youtube.reStart();
             }
         } else if (nowMusicType == VideoType.SoundCloud) {
-            Soundcloud.Pause(nowMusicURL);
+            Soundcloud.Pause();
         } else {
             console.log('There is no video to play');
         }

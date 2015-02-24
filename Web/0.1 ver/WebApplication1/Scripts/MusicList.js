@@ -2,9 +2,6 @@
 var VideoType = Object.freeze({ 'YouTube': 1, 'SoundCloud': 2 });
 var repeatable = true;
 var nextVideoURL;
-var SOUNDCLOUD_CLIENT_KEY = "a2b4d87e3bac428d8467d6ea343d49ae";
-
-var YTPlayer;
 
 //This code loads the IFrame Player API code asynchronously.
 var tag = document.createElement('script');

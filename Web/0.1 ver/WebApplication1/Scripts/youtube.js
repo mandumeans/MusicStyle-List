@@ -1,4 +1,8 @@
-﻿var Youtube = {
+﻿
+
+var YTPlayer;
+
+var Youtube = {
     //Client Youtube URL validation
     VideoURLValidation: function (UrlInput) {
         var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;

@@ -1,5 +1,10 @@
 ﻿
 
+var SOUNDCLOUD_THUM_T500X500 = "t500x500";
+var SOUNDCLOUD_THUM_LARGE = "large";
+var widget;
+var SOUNDCLOUD_CLIENT_KEY = "a2b4d87e3bac428d8467d6ea343d49ae";
+
 var Soundcloud = {
     PlaySoundcloudVideo: function (URL, thumb) {
         //Change isPlaying status attribue
@@ -27,16 +32,26 @@ var Soundcloud = {
         widgetIframe.src += "&amp;show_comments=false";
         widgetIframe.src += "&amp;show_user=false";
         $("#player iframe").hide();
-        $("#player").append("<img src='" + thumb + "' style='height:100%;width:auto;'></img>");
-        $("#player").css("background-image", "url('images/sc.jpg')");
-        $("#player").css("background-size", "100% 100%");
-        $("#player").css("background-repeat", "no-repeat");
+        thumb = thumb.replace(SOUNDCLOUD_THUM_LARGE, SOUNDCLOUD_THUM_T500X500);
+        $("#player").append("<img src='" + thumb + "'></img>");
 
         //console.log($("#sc-widget").find('img').attr("src"));
-        var widget = SC.Widget(widgetIframe);
+        widget = SC.Widget(widgetIframe);
+
+
+        widget.bind(SC.Widget.Events.READY, function () {
+            widget.getDuration(function (duration) {
+                console.log(duration);
+                $("#seekSlider").slider("option", "max", duration / 1000);
+            });
+        });
 
         widget.bind(SC.Widget.Events.FINISH, function () {
             Soundcloud.onVideoEnded(URL);
+        });
+
+        widget.bind(SC.Widget.Events.PLAY_PROGRESS, function (now) {
+            $("#seekSlider").slider("option", "value", now.currentPosition / 1000);
         });
     },
 
@@ -45,7 +60,42 @@ var Soundcloud = {
         MUSICLIST.playNextVideo(URL);
     },
 
-    Pause: function (URL) {
+    Pause: function () {
+        widget.toggle();
+    },
 
+    reStart: function () {
+        widget.toggle();
+    },
+
+    stop: function () {
+
+    },
+
+    seekTo: function (sec) {
+        widget.getPosition(function (pos) {
+            widget.seekTo(pos + (sec * 1000));
+        });
+    },
+    seekToHere: function (sec) {
+        widget.getPosition(function (pos) {
+            var newTime = sec * 1000;
+            //if (0 < newTime && newTime < pos) {
+                console.log("seekTo : " + newTime);
+                widget.seekTo(newTime);
+            //}
+        });
+    },
+    seekbarEventStart: function () {
+        //nowYTSeekbar = setInterval(function () {
+        //    var now = YTPlayer.getCurrentTime();
+        //    $("#seekSlider").slider("option", "value", now);
+        //}, 500);
+        widget.bind(SC.Widget.Events.PLAY_PROGRESS, function (now) {
+            $("#seekSlider").slider("option", "value", now.currentPosition / 1000);
+        });
+    },
+    seekbarEventEnd: function () {
+        widget.unbind(SC.Widget.Events.PLAY_PROGRESS);
     }
 }

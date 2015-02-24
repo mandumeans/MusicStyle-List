@@ -119,14 +119,18 @@ color: #000;
 ----------------------------------------------------------*/
 .video
 {
+	display: table;
 	text-align:center;
 	width:80%;
 	height:100%;
 }
 #player
 {
+	display: table-cell;
 	text-align:center;
+	vertical-align:middle;
 	height:100%;
+	background-color:black;
 }
 
 /* listRight
