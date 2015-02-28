@@ -205,9 +205,10 @@ namespace MusicList
                 //JArray items = (JArray)parsedResult["data"]["items"];
                 JArray items = JArray.Parse(result);
                 JArray dataArrayToSend = new JArray();
-
+                int cnt = 0;
                 foreach (JObject resultOne in items)
                 {
+                    if (cnt == 10) break;
                     try
                     {
                         SoundcloudSendData SSD = new SoundcloudSendData
@@ -224,6 +225,7 @@ namespace MusicList
                     catch (Exception e)
                     {
                     }
+                    cnt++;
                 }
 
                 //StringBuilder sb = new StringBuilder();

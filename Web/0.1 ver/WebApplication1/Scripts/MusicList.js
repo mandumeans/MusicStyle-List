@@ -121,57 +121,9 @@ var MUSICLIST = {
             }
         }); //btnURLInput click event end
         $('#btnSearchInput').click(function () {
-            var UrlInput = document.getElementById('btnSearchInput').value;
             var searchKeyword = document.getElementById('txtSearchInput').value;
 
-            Util.ajaxHelper('../MusicList.aspx/YoutubeKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
-                function (result) {
-                    var rawResult = jQuery.parseJSON(result.d);
-                    if (rawResult === 'False') {
-                        alert('There is no video on that URL');
-                    }
-                    else {
-                        console.log(rawResult);
-                        $('#searchModal').modal();
-                        //for(resultOne in rawResult){
-                        for (var i = 0; i < rawResult.length; i++) {
-                            console.log(jQuery.parseJSON(rawResult[i]).id);
-                            console.log(jQuery.parseJSON(rawResult[i]).title);
-                            console.log(jQuery.parseJSON(rawResult[i]).thumbnail.sqDefault);
-                            console.log(jQuery.parseJSON(rawResult[i]).thumbnail.hqDefault);
-                            console.log(jQuery.parseJSON(rawResult[i]).viewCount);
-                            console.log(jQuery.parseJSON(rawResult[i]).duration);
-                        }
-                    }
-                },
-                function (result) {
-                    alert('Error occurred');
-                }
-            );
-
-            Util.ajaxHelper('../MusicList.aspx/SoundcloudKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
-                function (result) {
-                    var rawResult = jQuery.parseJSON(result.d);
-                    if (rawResult === 'False') {
-                        alert('There is no video on that URL');
-                    }
-                    else {
-                        console.log(rawResult);
-                        //for(resultOne in rawResult){
-                        for (var i = 0; i < rawResult.length; i++) {
-                            console.log(jQuery.parseJSON(rawResult[i]).id);
-                            console.log(jQuery.parseJSON(rawResult[i]).title);
-                            console.log(jQuery.parseJSON(rawResult[i]).duration);
-                            console.log(jQuery.parseJSON(rawResult[i]).stream_url);
-                            console.log(jQuery.parseJSON(rawResult[i]).artwork_url);
-                            console.log(jQuery.parseJSON(rawResult[i]).playback_count);
-                        }
-                    }
-                },
-                function (result) {
-                    alert('Error occurred');
-                }
-            );
+            SEARCH.init(searchKeyword);
         }); //btnSearchInput click event end
 
         $('#btnClearList').click(function () {
@@ -277,6 +229,142 @@ var MUSICLIST = {
         } else {
             console.log(prevMusicURL);
         }
+    }
+}
+
+var SEARCH = {
+    clearify: function () {
+        $("#allTab").empty();
+        $("#ytTab").empty();
+        $("#scTab").empty();
+    },
+    init: function (searchKeyword) {
+        //Youtube Search
+        Util.ajaxHelper('../MusicList.aspx/YoutubeKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
+            function (result) {
+                var rawResult = jQuery.parseJSON(result.d);
+                if (rawResult === 'False') {
+                    alert('There is no video on that URL');
+                }
+                else {
+                    console.log(rawResult);
+                    //SEARCH.clearify();
+                    $('#searchModal').modal();
+                    //for(resultOne in rawResult){
+                    for (var i = 0; i < rawResult.length; i++) {
+                        var result = jQuery.parseJSON(rawResult[i]);
+                        appendString = "<a href='#' class='list-group-item' vid='" + result.id + "' type='1'>";
+                        appendString += "<img class='searchImg' src='" + result.thumbnail.sqDefault + "' alt='sig'></img>";
+                        appendString += "<div class='searchDesc'>";
+                        appendString += "<span>" + result.title + "</span>";
+                        appendString += "<span class='searchCount'>" + result.viewCount + " views</span>";
+                        appendString += "<span class='searchDuration'>" + result.duration + "</span>";
+                        appendString += "</div>";
+                        appendString += "</a>";
+
+                        $("#allTab").append(appendString);
+                    }
+                    SEARCH.soundCloudInit(searchKeyword);
+                }
+            },
+            function (result) {
+                alert('Error occurred');
+            }
+        );
+    },
+
+    soundCloudInit: function (searchKeyword) {
+        //Soundcloud Search
+        Util.ajaxHelper('../MusicList.aspx/SoundcloudKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
+            function (result) {
+                var rawResult = jQuery.parseJSON(result.d);
+                if (rawResult === 'False') {
+                    alert('There is no video on that URL');
+                }
+                else {
+                    console.log(rawResult);
+                    //for(resultOne in rawResult){
+                    for (var i = 0; i < rawResult.length; i++) {
+                        console.log(jQuery.parseJSON(rawResult[i]).id);
+                        console.log(jQuery.parseJSON(rawResult[i]).title);
+                        console.log(jQuery.parseJSON(rawResult[i]).duration);
+                        console.log(jQuery.parseJSON(rawResult[i]).stream_url);
+                        console.log(jQuery.parseJSON(rawResult[i]).artwork_url);
+                        console.log(jQuery.parseJSON(rawResult[i]).playback_count);
+                        var result = jQuery.parseJSON(rawResult[i]);
+                        appendString = "<a href='#' class='list-group-item' vid='" + result.id + "' type='2'>";
+                        appendString += "<img class='searchImg' src='" + result.artwork_url + "' alt='sig'></img>";
+                        appendString += "<div class='searchDesc'>";
+                        appendString += "<span>" + result.title + "</span>";
+                        appendString += "<span class='searchCount'>" + result.playback_count + " views</span>";
+                        appendString += "<span class='searchDuration'>" + result.duration + "</span>";
+                        appendString += "</div>";
+                        appendString += "</a>";
+
+                        $("#allTab").append(appendString);
+                    }
+                }
+            },
+            function (result) {
+                alert('Error occurred');
+            }
+        );
+    },
+    youtubeSearch: function (searchKeyword) {
+        //Youtube Search
+        Util.ajaxHelper('../MusicList.aspx/YoutubeKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
+            function (result) {
+                var rawResult = jQuery.parseJSON(result.d);
+                if (rawResult === 'False') {
+                    alert('There is no video on that URL');
+                }
+                else {
+                    console.log(rawResult);
+                    //SEARCH.clearify();
+                    $('#searchModal').modal();
+                    //for(resultOne in rawResult){
+                    for (var i = 0; i < rawResult.length; i++) {
+                        //$("#playlist").append("");
+                        console.log(jQuery.parseJSON(rawResult[i]).id);
+                        console.log(jQuery.parseJSON(rawResult[i]).title);
+                        console.log(jQuery.parseJSON(rawResult[i]).thumbnail.sqDefault);
+                        console.log(jQuery.parseJSON(rawResult[i]).thumbnail.hqDefault);
+                        console.log(jQuery.parseJSON(rawResult[i]).viewCount);
+                        console.log(jQuery.parseJSON(rawResult[i]).duration);
+                    }
+                }
+            },
+            function (result) {
+                alert('Error occurred');
+            }
+        );
+    },
+
+    soundCloudSearch: function (searchKeyword) {
+        //Soundcloud Search
+        Util.ajaxHelper('../MusicList.aspx/SoundcloudKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
+            function (result) {
+                var rawResult = jQuery.parseJSON(result.d);
+                if (rawResult === 'False') {
+                    alert('There is no video on that URL');
+                }
+                else {
+                    console.log(rawResult);
+                    //for(resultOne in rawResult){
+                    for (var i = 0; i < rawResult.length; i++) {
+                        console.log(jQuery.parseJSON(rawResult[i]).id);
+                        console.log(jQuery.parseJSON(rawResult[i]).title);
+                        console.log(jQuery.parseJSON(rawResult[i]).duration);
+                        console.log(jQuery.parseJSON(rawResult[i]).stream_url);
+                        console.log(jQuery.parseJSON(rawResult[i]).artwork_url);
+                        console.log(jQuery.parseJSON(rawResult[i]).playback_count);
+                    }
+                }
+            },
+            function (result) {
+                alert('Error occurred');
+            }
+        );
     }
 }
 

@@ -75,13 +75,33 @@
                   </div>
                   <!-- Tab panes -->
                   <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="allTab">get all</div>
-                    <div role="tabpanel" class="tab-pane" id="ytTab">YT</div>
-                    <div role="tabpanel" class="tab-pane" id="scTab">SC</div>
+                    <div role="tabpanel" class="tab-pane active">
+                        <ul class="searchedList list-group" id="allTab">
+                        </ul>
+                    </div>
+                    <div role="tabpanel" class="tab-pane">
+                        <ul class="searchedList list-group" id="ytTab">
+                          <a href="#" class="list-group-item">Cras justo odio</a>
+                          <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                          <a href="#" class="list-group-item">Morbi leo risus</a>
+                          <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                          <a href="#" class="list-group-item">Vestibulum at eros</a>
+                        </ul>
+                    </div>
+                    <div role="tabpanel" class="tab-pane">
+                        <ul class="searchedList list-group" id="scTab">
+                          <a href="#" class="list-group-item">Cras justo odio</a>
+                          <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                          <a href="#" class="list-group-item">Morbi leo risus</a>
+                          <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                          <a href="#" class="list-group-item">Vestibulum at eros</a>
+                        </ul>
+                    </div>
                   </div>
               </div>
+              <!--
               <div class="modal-footer">
-              </div>
+              </div>-->
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->

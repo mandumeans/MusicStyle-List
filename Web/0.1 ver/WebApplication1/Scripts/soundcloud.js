@@ -18,7 +18,7 @@ var Soundcloud = {
             $('.video').find('img').remove();
         }
 
-        $("#player").append('<iframe id="sc-widget" src="" width="100%" height="465" scrolling="no" frameborder="no"></iframe>');
+        $("#player").append('<iframe id="sc-widget" src="" width="100%" height="465" scrolling="no" frameborder="no" style="position:absolute;top:-10000px;left:-10000px;"></iframe>');
 
         var widgetIframe = document.getElementById('sc-widget');
         widgetIframe.src = "https://w.soundcloud.com/player/?url=" + URL + "&amp;auto_play=true";
@@ -31,7 +31,7 @@ var Soundcloud = {
         //widgetIframe.src += "&amp;show_artwork=false";
         widgetIframe.src += "&amp;show_comments=false";
         widgetIframe.src += "&amp;show_user=false";
-        $("#player iframe").hide();
+        //$("#player iframe").hide();
         thumb = thumb.replace(SOUNDCLOUD_THUM_LARGE, SOUNDCLOUD_THUM_T500X500);
         $("#player").append("<img src='" + thumb + "'></img>");
 
@@ -41,7 +41,6 @@ var Soundcloud = {
 
         widget.bind(SC.Widget.Events.READY, function () {
             widget.getDuration(function (duration) {
-                console.log(duration);
                 $("#seekSlider").slider("option", "max", duration / 1000);
             });
         });
@@ -81,7 +80,6 @@ var Soundcloud = {
         widget.getPosition(function (pos) {
             var newTime = sec * 1000;
             //if (0 < newTime && newTime < pos) {
-                console.log("seekTo : " + newTime);
                 widget.seekTo(newTime);
             //}
         });
