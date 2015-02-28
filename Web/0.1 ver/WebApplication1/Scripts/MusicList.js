@@ -232,6 +232,8 @@ var MUSICLIST = {
     }
 }
 
+var SEARCH_TITLE_MAXLENGTH = 40;
+
 var SEARCH = {
     clearify: function () {
         $("#allTab").empty();
@@ -247,22 +249,29 @@ var SEARCH = {
                     alert('There is no video on that URL');
                 }
                 else {
-                    console.log(rawResult);
-                    //SEARCH.clearify();
+                    SEARCH.clearify();
                     $('#searchModal').modal();
-                    //for(resultOne in rawResult){
                     for (var i = 0; i < rawResult.length; i++) {
                         var result = jQuery.parseJSON(rawResult[i]);
-                        appendString = "<a href='#' class='list-group-item' vid='" + result.id + "' type='1'>";
+                        var newTitle = result.title;
+                        if (result.title.length > SEARCH_TITLE_MAXLENGTH - 1) {
+                            newTitle = newTitle.substring(0, SEARCH_TITLE_MAXLENGTH);
+                            newTitle += "...";
+                        }
+                        if (result.artwork_url == "") {
+                            result.artwork_url = "images/noimg.png";
+                        }
+                        appendString = "<a href='#' class='list-group-item' title='" + result.title + "' vid='" + result.id + "' type='1'>";
                         appendString += "<img class='searchImg' src='" + result.thumbnail.sqDefault + "' alt='sig'></img>";
                         appendString += "<div class='searchDesc'>";
-                        appendString += "<span>" + result.title + "</span>";
+                        appendString += "<span>" + newTitle + "</span>";
                         appendString += "<span class='searchCount'>" + result.viewCount + " views</span>";
-                        appendString += "<span class='searchDuration'>" + result.duration + "</span>";
+                        appendString += "<span class='searchDuration'>" + SEARCH.YTTimeCalc(result.duration) + "</span>";
                         appendString += "</div>";
                         appendString += "</a>";
 
                         $("#allTab").append(appendString);
+                        $("#ytTab").append(appendString);
                     }
                     SEARCH.soundCloudInit(searchKeyword);
                 }
@@ -282,26 +291,28 @@ var SEARCH = {
                     alert('There is no video on that URL');
                 }
                 else {
-                    console.log(rawResult);
-                    //for(resultOne in rawResult){
                     for (var i = 0; i < rawResult.length; i++) {
-                        console.log(jQuery.parseJSON(rawResult[i]).id);
-                        console.log(jQuery.parseJSON(rawResult[i]).title);
-                        console.log(jQuery.parseJSON(rawResult[i]).duration);
-                        console.log(jQuery.parseJSON(rawResult[i]).stream_url);
-                        console.log(jQuery.parseJSON(rawResult[i]).artwork_url);
-                        console.log(jQuery.parseJSON(rawResult[i]).playback_count);
                         var result = jQuery.parseJSON(rawResult[i]);
-                        appendString = "<a href='#' class='list-group-item' vid='" + result.id + "' type='2'>";
+                        var newTitle = result.title;
+                        var newDuration = result.duration;
+                        if (result.title.length > SEARCH_TITLE_MAXLENGTH - 1) {
+                            newTitle = newTitle.substring(0, SEARCH_TITLE_MAXLENGTH);
+                            newTitle += "...";
+                        }
+                        if (result.artwork_url == "") {
+                            result.artwork_url = "images/noimg.png";
+                        }
+                        appendString = "<a href='#' class='list-group-item' title='" + result.title + "' vid='" + result.id + "' type='2'>";
                         appendString += "<img class='searchImg' src='" + result.artwork_url + "' alt='sig'></img>";
                         appendString += "<div class='searchDesc'>";
-                        appendString += "<span>" + result.title + "</span>";
+                        appendString += "<span>" + newTitle + "</span>";
                         appendString += "<span class='searchCount'>" + result.playback_count + " views</span>";
-                        appendString += "<span class='searchDuration'>" + result.duration + "</span>";
+                        appendString += "<span class='searchDuration'>" + SEARCH.SCTimeCalc(result.duration) + "</span>";
                         appendString += "</div>";
                         appendString += "</a>";
 
                         $("#allTab").append(appendString);
+                        $("#scTab").append(appendString);
                     }
                 }
             },
@@ -319,18 +330,27 @@ var SEARCH = {
                     alert('There is no video on that URL');
                 }
                 else {
-                    console.log(rawResult);
-                    //SEARCH.clearify();
                     $('#searchModal').modal();
-                    //for(resultOne in rawResult){
                     for (var i = 0; i < rawResult.length; i++) {
-                        //$("#playlist").append("");
-                        console.log(jQuery.parseJSON(rawResult[i]).id);
-                        console.log(jQuery.parseJSON(rawResult[i]).title);
-                        console.log(jQuery.parseJSON(rawResult[i]).thumbnail.sqDefault);
-                        console.log(jQuery.parseJSON(rawResult[i]).thumbnail.hqDefault);
-                        console.log(jQuery.parseJSON(rawResult[i]).viewCount);
-                        console.log(jQuery.parseJSON(rawResult[i]).duration);
+                        var result = jQuery.parseJSON(rawResult[i]);
+                        var newTitle = result.title;
+                        if (result.title.length > SEARCH_TITLE_MAXLENGTH - 1) {
+                            newTitle = newTitle.substring(0, SEARCH_TITLE_MAXLENGTH);
+                            newTitle += "...";
+                        }
+                        if (result.artwork_url == "") {
+                            result.artwork_url = "images/noimg.png";
+                        }
+                        appendString = "<a href='#' class='list-group-item' title='" + result.title + "' vid='" + result.id + "' type='1'>";
+                        appendString += "<img class='searchImg' src='" + result.thumbnail.sqDefault + "' alt='sig'></img>";
+                        appendString += "<div class='searchDesc'>";
+                        appendString += "<span>" + newTitle + "</span>";
+                        appendString += "<span class='searchCount'>" + result.viewCount + " views</span>";
+                        appendString += "<span class='searchDuration'>" + SEARCH.YTTimeCalc(result.duration) + "</span>";
+                        appendString += "</div>";
+                        appendString += "</a>";
+
+                        $("#allTab").append(appendString);
                     }
                 }
             },
@@ -365,6 +385,37 @@ var SEARCH = {
                 alert('Error occurred');
             }
         );
+    },
+
+    YTTimeCalc: function (sec) {
+        var min = parseInt(sec / 60);
+        var newSec = sec % 60;
+        var hour = parseInt(min / 60);
+        var newMin = min % 60;
+
+        if (hour > 0) {
+            if (newSec < 10) {
+                newSec = "0" + newSec;
+            }
+            if (newMin < 10) {
+                newMin = "0" + newMin;
+            }
+            return hour + ":" + newMin + ":" + newSec;
+        } else if (min > 0) {
+            if (newSec < 10) {
+                newSec = "0" + newSec;
+            }
+            return newMin + ":" + newSec;
+        } else {
+            if (newSec < 10) {
+                newSec = "0" + newSec;
+            }
+            return "0:" + newSec;
+        }
+    },
+
+    SCTimeCalc: function (msec) {
+        return SEARCH.YTTimeCalc(parseInt(msec / 1000));
     }
 }
 

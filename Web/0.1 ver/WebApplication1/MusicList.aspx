@@ -67,34 +67,24 @@
                   <!-- Nav tabs -->
                   <div role="tabpanel">
                       <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#allTab" aria-controls="allTab" role="tab" data-toggle="tab">All</a></li>
-                        <li role="presentation"><a href="#ytTab" aria-controls="ytTab" role="tab" data-toggle="tab">Youtube only</a></li>
-                        <li role="presentation"><a href="#scTab" aria-controls="scTab" role="tab" data-toggle="tab">SoundCloud only</a></li>
+                        <li role="presentation" class="active"><a href="#allTabPanel" aria-controls="allTab" role="tab" data-toggle="tab">All</a></li>
+                        <li role="presentation"><a href="#ytTabPanel" aria-controls="ytTab" role="tab" data-toggle="tab">Youtube only</a></li>
+                        <li role="presentation"><a href="#scTabPanel" aria-controls="scTab" role="tab" data-toggle="tab">SoundCloud only</a></li>
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                       </ul>
                   </div>
                   <!-- Tab panes -->
                   <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active">
+                    <div role="tabpanel" class="tab-pane active" id="allTabPanel">
                         <ul class="searchedList list-group" id="allTab">
                         </ul>
                     </div>
-                    <div role="tabpanel" class="tab-pane">
+                    <div role="tabpanel" class="tab-pane" id="ytTabPanel">
                         <ul class="searchedList list-group" id="ytTab">
-                          <a href="#" class="list-group-item">Cras justo odio</a>
-                          <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-                          <a href="#" class="list-group-item">Morbi leo risus</a>
-                          <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                          <a href="#" class="list-group-item">Vestibulum at eros</a>
                         </ul>
                     </div>
-                    <div role="tabpanel" class="tab-pane">
+                    <div role="tabpanel" class="tab-pane" id="scTabPanel">
                         <ul class="searchedList list-group" id="scTab">
-                          <a href="#" class="list-group-item">Cras justo odio</a>
-                          <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-                          <a href="#" class="list-group-item">Morbi leo risus</a>
-                          <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                          <a href="#" class="list-group-item">Vestibulum at eros</a>
                         </ul>
                     </div>
                   </div>
