@@ -183,6 +183,7 @@ namespace MusicList
             public string stream_url { get; set; }
             public string artwork_url { get; set; }
             public string playback_count { get; set; }
+            public string permalink_url { get; set; }
         }
 
         [WebMethod]
@@ -218,7 +219,8 @@ namespace MusicList
                             duration = resultOne["duration"].ToString(),
                             stream_url = resultOne["stream_url"].ToString(),
                             artwork_url = (resultOne["artwork_url"] == null ? "" : resultOne["artwork_url"]).ToString(),
-                            playback_count = resultOne["playback_count"].ToString()
+                            playback_count = resultOne["playback_count"].ToString(),
+                            permalink_url = resultOne["permalink_url"].ToString()
                         };
                         dataArrayToSend.Add(JsonConvert.SerializeObject(SSD, Newtonsoft.Json.Formatting.Indented));
                     }

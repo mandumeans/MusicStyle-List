@@ -241,7 +241,8 @@ namespace MvcApplication1.Controllers
                     }
                 }
 
-                return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+                return "asdf";
             }
             catch (Exception ex)
             {

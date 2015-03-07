@@ -50,6 +50,26 @@ var MusicPlayer = {
             var nowMusicURL = $('.musicListItem[isPlaying="true"]').attr('url');
             MUSICLIST.playPreviousVideo(nowMusicURL);
         });
+        $(".replay").on("click", function () {
+            if (repeatable) {
+                //now repeatble
+                repeatable = false;
+                $(".replay img").attr("src", "images/replayOff.png");
+            } else {
+                repeatable = true;
+                $(".replay img").attr("src", "images/replayOn.png");
+            }
+        });
+        $(".shuffle").on("click", function () {
+            if (shuffle) {
+                //now shuffle
+                shuffle = false;
+                $(".shuffle img").attr("src", "images/shuffleOff.png");
+            } else {
+                shuffle = true;
+                $(".shuffle img").attr("src", "images/shuffleOn.png");
+            }
+        });
         $(".rightwind").mousedown(function () {
             var nowMusicURL = $('.musicListItem[isPlaying="true"]').attr('url');
             timeout = setInterval(function () { MusicPlayer.seekTo(seekSec) }, 500);

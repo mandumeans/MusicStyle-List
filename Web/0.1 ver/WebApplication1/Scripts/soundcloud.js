@@ -56,7 +56,9 @@ var Soundcloud = {
 
     //video ended go to next video
     onVideoEnded: function (URL) {
-        MUSICLIST.playNextVideo(URL);
+        if (repeatable) {
+            MUSICLIST.playNextVideo(URL);
+        }
     },
 
     Pause: function () {
@@ -80,7 +82,7 @@ var Soundcloud = {
         widget.getPosition(function (pos) {
             var newTime = sec * 1000;
             //if (0 < newTime && newTime < pos) {
-                widget.seekTo(newTime);
+            widget.seekTo(newTime);
             //}
         });
     },

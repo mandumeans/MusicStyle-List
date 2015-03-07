@@ -22,7 +22,9 @@ var Youtube = {
     },
     //video ended go to next video
     onVideoEnded: function (URL) {
-        MUSICLIST.playNextVideo(URL);
+        if (repeatable) {
+            MUSICLIST.playNextVideo(URL);
+        }
     },
     PlayYoutubeVideo: function (URL) {
         var VID = Youtube.FindUrlVideoID(URL);

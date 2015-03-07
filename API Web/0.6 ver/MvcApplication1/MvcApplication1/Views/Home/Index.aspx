@@ -49,7 +49,7 @@
     </div>
     
     <div align="center">
-    <p>Copyright about YoutubeMp3ConvertWeb is belonging busungg</p>
+    <p>Copyright about YoutubeMp3ConvertWeb is belonging busungg and minseong</p>
     </div>
     </form>
 </body>

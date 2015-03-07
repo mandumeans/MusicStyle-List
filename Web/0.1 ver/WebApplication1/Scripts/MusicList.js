@@ -1,6 +1,7 @@
 ﻿
 var VideoType = Object.freeze({ 'YouTube': 1, 'SoundCloud': 2 });
 var repeatable = true;
+var shuffle = false;
 var nextVideoURL;
 
 //This code loads the IFrame Player API code asynchronously.
@@ -33,7 +34,6 @@ var rightListStatus;
 
 var MUSICLIST = {
     init: function () {
-        //$('#listRight').hide();
         rightListStatus = false;
 
         $(window).resize(function () {
@@ -42,34 +42,31 @@ var MUSICLIST = {
                 $('.video').find('iframe').css('height', $('.video').css('height'))
             }
         });
-        /*
-        $(document).mousemove(function (e) {
-        var pageWidth = $('html').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
-        var pageHeight = $('html').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
-        var rightListWidth = $('#listRight').css('width').replace(/([\d.]+)(px|pt|em|%)/, '$1');
-        var rightListHeight = $('#listRight').css('height').replace(/([\d.]+)(px|pt|em|%)/, '$1');
 
-        if ($('.video').find('iframe').length > 0) {
-        if ($('.video').find('iframe').css('pointer-events') == 'auto') {
-        $('.video').find('iframe').css('pointer-events', 'none');
-        }
-        }
-        //width 80%~100%
-        //height 13%~68%
-        if (rightListStatus == true) {
-        if (e.pageX < (pageWidth - rightListWidth - 50)) {
-        //right list로부터 벗어남
-        $('#listRight').hide();
-        rightListStatus = false;
-        }
-        }
+        //Get List from cookies
 
-        if ((((e.pageX / pageWidth) > 0.8) && (((e.pageY / pageHeight) > 0.13) && ((e.pageY / pageHeight) < 0.68))) && rightListStatus == false) {
-        $('#listRight').show();
-        rightListStatus = true;
+        var cookieContent = MUSICLIST.getCookie("playStyle");
+        if (cookieContent != "") {
+            $('#playlist').append(cookieContent);
+            $("#playlist .musicPlaying").attr("isPlaying", "false");
+            $("#playlist .musicPlaying").removeClass("musicPlaying");
+            $('.musicItemTitle').click(function () {
+                if ($(this).parent().attr('type') == VideoType.YouTube) {
+                    //Youtube
+                    Youtube.PlayYoutubeVideo($(this).parent().attr('url'));
+                } else {
+                    //SoundCloud
+                    Soundcloud.PlaySoundcloudVideo($(this).parent().attr('url'), $(this).parent().attr('thumb'));
+                }
+            });
+            $('.musicItemRemove').click(function () {
+                MUSICLIST.DeleteVideoFromList($(this).parent().attr('url'));
+                //Make list to cookie 
+                var playList = $('#playlist').html();
+                MUSICLIST.setCookie("playStyle", playList, 20);
+                //Make list to cookie end
+            });
         }
-        });
-        */
 
         $('#btnURLInput').click(function () {
             var UrlInput = document.getElementById('txtURLInput').value;
@@ -120,9 +117,15 @@ var MUSICLIST = {
                 );
             }
         }); //btnURLInput click event end
-        $('#btnSearchInput').click(function () {
-            var searchKeyword = document.getElementById('txtSearchInput').value;
+        $("#btnSearchInput").click(function () {
+            var searchKeyword = $("#txtSearchInput").val();
+            $("#txtSearchInput2").val(searchKeyword);
+            SEARCH.init(searchKeyword);
+            $("#searchModal").modal();
+        }); //btnSearchInput click event end
 
+        $("#btnSearchInput2").click(function () {
+            var searchKeyword = $("#txtSearchInput2").val();
             SEARCH.init(searchKeyword);
         }); //btnSearchInput click event end
 
@@ -136,11 +139,28 @@ var MUSICLIST = {
                 $('#btnSearchInput').click();
             }
         });
+        $("#txtSearchInput2").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#btnSearchInput2").click();
+            }
+        });
     },
     AddNewVideoItem: function (type, url, title, thumb) {
         var videoItemType;
         //var vid = Youtube.FindUrlVideoID(url);
-        $('#playlist').append('<li class="musicListItem" type="' + type + '" url = "' + url + '" thumb = "' + thumb + '" isPlaying = "false"><span class="musicItemTitle">' + title + '</span><a class="musicItemRemove">X</a></li>');
+        var listString = '<li class="musicListItem" type="' + type + '" url = "' + url + '" thumb = "' + thumb + '" isPlaying = "false"><span class="musicItemTitle">' + title + '</span><a class="musicItemRemove">X</a></li>'
+        $('#playlist').append(listString);
+
+        //Make list to cookie 
+        var playList = $('#playlist').html();
+        MUSICLIST.setCookie("playStyle", playList, 20);
+        //Make list to cookie end
+
+        //remove all Events
+        $(".musicItemTitle").off("click");
+        $(".musicItemRemove").off("click");
+
+        //register event each
         $('.musicItemTitle').click(function () {
             if ($(this).parent().attr('type') == VideoType.YouTube) {
                 //Youtube
@@ -152,6 +172,10 @@ var MUSICLIST = {
         });
         $('.musicItemRemove').click(function () {
             MUSICLIST.DeleteVideoFromList($(this).parent().attr('url'));
+            //Make list to cookie 
+            var playList = $('#playlist').html();
+            MUSICLIST.setCookie("playStyle", playList, 20);
+            //Make list to cookie end
         });
     },
     DeleteVideoFromList: function (URL) {
@@ -175,11 +199,36 @@ var MUSICLIST = {
         }
         else {
             nextMusicURL = $('.musicListItem[url="' + URL + '"]').next('li').attr('url');
-            if (nextMusicURL === null) {
+            if (nextMusicURL === null || (typeof nextMusicURL) === "undefined") {
                 if (repeatable === true) {
                     //it's last list item and repeatable -> go to first song
                     nextMusicURL = $('.musicListItem').first().attr('url');
                 }
+            }
+        }
+        return nextMusicURL;
+    },
+    getRandomVideo: function (URL) {
+        var nextMusicURL = null;
+        var videoCount = $(".musicListItem").length;
+
+        if (videoCount < 2) {
+            //There is no now playing video (playing video has been deleted)
+            if ($('.musicListItem[isPlaying="true"]').length < 1) {
+                if ($('.musicListItem').length > 0) {
+                    nextMusicURL = nextVideoURL;    //when video is deleted, next Video VID is saved;
+                }
+            } else {
+                nextMusicURL = $('.musicListItem[isPlaying="true"]').attr("url");
+            }
+        } else {
+            var nextVideoNum = parseInt(Math.random() * videoCount);
+            nextVideoNum = nextVideoNum + 1;
+            nextMusicURL = $(".musicListItem:nth-child(" + nextVideoNum + ")[isPlaying='false']").attr('url');
+            while (typeof nextMusicURL == "undefined") {
+                nextVideoNum = parseInt(Math.random() * videoCount);
+                nextVideoNum = nextVideoNum + 1;
+                nextMusicURL = $(".musicListItem:nth-child(" + nextVideoNum + ")[isPlaying='false']").attr('url');
             }
         }
         return nextMusicURL;
@@ -206,9 +255,15 @@ var MUSICLIST = {
     },
 
     playNextVideo: function (exURL) {
-        var nextMusicURL = MUSICLIST.getNextVideo(exURL);
-        var nextMusicType = $('.musicListItem[url="' + nextMusicURL + '"]').attr('type');
+        var nextMusicURL;
+        var nextMusicType;
 
+        if (shuffle) {
+            nextMusicURL = MUSICLIST.getRandomVideo(exURL);
+        } else {
+            nextMusicURL = MUSICLIST.getNextVideo(exURL);
+        }
+        nextMusicType = $('.musicListItem[url="' + nextMusicURL + '"]').attr('type');
         if (nextMusicType == VideoType.YouTube) {
             Youtube.PlayYoutubeVideo(nextMusicURL);
         } else if (nextMusicType == VideoType.SoundCloud) {
@@ -229,6 +284,31 @@ var MUSICLIST = {
         } else {
             console.log(prevMusicURL);
         }
+    },
+
+    setCookie: function (cName, cValue, cDay) {
+        var expire = new Date();
+        expire.setDate(expire.getDate() + cDay);
+        cookies = cName + "=" + escape(cValue) + "; path=/";
+        if (typeof cDay != "undefined") {
+            cookies += ";expires=" + expire.toGMTString() + ";";
+        }
+        document.cookie = cookies;
+    },
+    getCookie: function (cName) {
+        cName = cName + "=";
+        var cookieData = document.cookie;
+        var start = cookieData.indexOf(cName);
+        var cValue = "";
+        if (start != -1) {
+            start += cName.length;
+            var end = cookieData.indexOf(";", start);
+            if (end == -1) {
+                end = cookieData.length;
+            }
+            cValue = cookieData.substring(start, end);
+        }
+        return unescape(cValue);
     }
 }
 
@@ -250,7 +330,6 @@ var SEARCH = {
                 }
                 else {
                     SEARCH.clearify();
-                    $('#searchModal').modal();
                     for (var i = 0; i < rawResult.length; i++) {
                         var result = jQuery.parseJSON(rawResult[i]);
                         var newTitle = result.title;
@@ -261,10 +340,11 @@ var SEARCH = {
                         if (result.artwork_url == "") {
                             result.artwork_url = "images/noimg.png";
                         }
-                        appendString = "<a href='#' class='list-group-item' title='" + result.title + "' vid='" + result.id + "' type='1'>";
+                        appendString = "<a href='#' class='list-group-item addYTNewVideo' title='" + result.title + "' vid='" + result.id + "' type='1'>";
                         appendString += "<img class='searchImg' src='" + result.thumbnail.sqDefault + "' alt='sig'></img>";
                         appendString += "<div class='searchDesc'>";
                         appendString += "<span>" + newTitle + "</span>";
+                        appendString += "<span class='searchTitleReal' style='display:none;'>" + result.title + "</span>";
                         appendString += "<span class='searchCount'>" + result.viewCount + " views</span>";
                         appendString += "<span class='searchDuration'>" + SEARCH.YTTimeCalc(result.duration) + "</span>";
                         appendString += "</div>";
@@ -273,6 +353,10 @@ var SEARCH = {
                         $("#allTab").append(appendString);
                         $("#ytTab").append(appendString);
                     }
+                    $(".addYTNewVideo").click(function () {
+                        var urlPrefix = "https://www.youtube.com/watch?v=";
+                        MUSICLIST.AddNewVideoItem(VideoType.YouTube, urlPrefix + $(this).attr("vid"), $(this).find(".searchTitleReal").html(), '');
+                    });
                     SEARCH.soundCloudInit(searchKeyword);
                 }
             },
@@ -302,10 +386,11 @@ var SEARCH = {
                         if (result.artwork_url == "") {
                             result.artwork_url = "images/noimg.png";
                         }
-                        appendString = "<a href='#' class='list-group-item' title='" + result.title + "' vid='" + result.id + "' type='2'>";
+                        appendString = "<a href='#' class='list-group-item addSCNewVideo' title='" + result.title + "' url='" + result.permalink_url + "' type='2'>";
                         appendString += "<img class='searchImg' src='" + result.artwork_url + "' alt='sig'></img>";
                         appendString += "<div class='searchDesc'>";
-                        appendString += "<span>" + newTitle + "</span>";
+                        appendString += "<span class='searchTitle'>" + newTitle + "</span>";
+                        appendString += "<span class='searchTitleReal' style='display:none;'>" + result.title + "</span>";
                         appendString += "<span class='searchCount'>" + result.playback_count + " views</span>";
                         appendString += "<span class='searchDuration'>" + SEARCH.SCTimeCalc(result.duration) + "</span>";
                         appendString += "</div>";
@@ -314,71 +399,9 @@ var SEARCH = {
                         $("#allTab").append(appendString);
                         $("#scTab").append(appendString);
                     }
-                }
-            },
-            function (result) {
-                alert('Error occurred');
-            }
-        );
-    },
-    youtubeSearch: function (searchKeyword) {
-        //Youtube Search
-        Util.ajaxHelper('../MusicList.aspx/YoutubeKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
-            function (result) {
-                var rawResult = jQuery.parseJSON(result.d);
-                if (rawResult === 'False') {
-                    alert('There is no video on that URL');
-                }
-                else {
-                    $('#searchModal').modal();
-                    for (var i = 0; i < rawResult.length; i++) {
-                        var result = jQuery.parseJSON(rawResult[i]);
-                        var newTitle = result.title;
-                        if (result.title.length > SEARCH_TITLE_MAXLENGTH - 1) {
-                            newTitle = newTitle.substring(0, SEARCH_TITLE_MAXLENGTH);
-                            newTitle += "...";
-                        }
-                        if (result.artwork_url == "") {
-                            result.artwork_url = "images/noimg.png";
-                        }
-                        appendString = "<a href='#' class='list-group-item' title='" + result.title + "' vid='" + result.id + "' type='1'>";
-                        appendString += "<img class='searchImg' src='" + result.thumbnail.sqDefault + "' alt='sig'></img>";
-                        appendString += "<div class='searchDesc'>";
-                        appendString += "<span>" + newTitle + "</span>";
-                        appendString += "<span class='searchCount'>" + result.viewCount + " views</span>";
-                        appendString += "<span class='searchDuration'>" + SEARCH.YTTimeCalc(result.duration) + "</span>";
-                        appendString += "</div>";
-                        appendString += "</a>";
-
-                        $("#allTab").append(appendString);
-                    }
-                }
-            },
-            function (result) {
-                alert('Error occurred');
-            }
-        );
-    },
-
-    soundCloudSearch: function (searchKeyword) {
-        //Soundcloud Search
-        Util.ajaxHelper('../MusicList.aspx/SoundcloudKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
-            function (result) {
-                var rawResult = jQuery.parseJSON(result.d);
-                if (rawResult === 'False') {
-                    alert('There is no video on that URL');
-                }
-                else {
-                    console.log(rawResult);
-                    //for(resultOne in rawResult){
-                    for (var i = 0; i < rawResult.length; i++) {
-                        console.log(jQuery.parseJSON(rawResult[i]).id);
-                        console.log(jQuery.parseJSON(rawResult[i]).title);
-                        console.log(jQuery.parseJSON(rawResult[i]).duration);
-                        console.log(jQuery.parseJSON(rawResult[i]).stream_url);
-                        console.log(jQuery.parseJSON(rawResult[i]).artwork_url);
-                        console.log(jQuery.parseJSON(rawResult[i]).playback_count);
-                    }
+                    $(".addSCNewVideo").click(function () {
+                        MUSICLIST.AddNewVideoItem(VideoType.SoundCloud, $(this).attr("url"), $(this).find(".searchTitleReal").html(), $(this).find(".searchImg").attr("src"));
+                    });
                 }
             },
             function (result) {

@@ -51,6 +51,7 @@ html, body, form
     width:100%;
     height: 100%;
     float:left;
+	background-color:black;
 }
 
 #listRight
@@ -64,7 +65,9 @@ html, body, form
     height: 100%;
     right:0px;
     float:right;
-    background:#9E9E9E;
+    background:#DEDEDE;
+    padding : 5px;
+    padding-top : 15px;
 }
 
 .player
@@ -75,7 +78,7 @@ html, body, form
     position:absolute;
     width:40%;
     height: 90px;
-    right:30%;
+    right:40%;
     background: rgb(158, 158, 158);
     bottom:0px;
     text-align: center;
@@ -156,9 +159,11 @@ color: #000;
 
 .musicListItem
 {
+    list-style : none;
     padding : 2px;
     margin-top : 5px;
     margin-bottom : 5px;
+    color : Black;
 }
 
 .musicItemRemove
@@ -169,13 +174,14 @@ color: #000;
 
 span.musicItemTitle:hover
 {
-    color : #FFCC99;
+    font-weight: bold;
     cursor : pointer;
 }
 
 .musicPlaying
 {
    background : grey;
+   color : White;
 }
 
 
@@ -186,7 +192,7 @@ span.musicItemTitle:hover
 
 .controller
 {
-	margin-bottom : 20px;
+	margin-bottom : 10px;
 }
 
 .seeker
@@ -196,9 +202,36 @@ span.musicItemTitle:hover
 	margin-left : 20px;
 }
 
+#txtURLInput
+{
+    margin-bottom : 5px;
+    width:75% !important;
+    display:inline !important;
+}
+
+#btnURLInput
+{
+    width:20% !important;
+}
 
 /* search
 -------http://localhost:2188/MusicList.aspx#---------------------------------------------------*/
+
+.search 
+{
+    vertical-align: middle;
+}
+
+.searchTxt
+{
+    width:75% !important;
+    display:inline !important;
+}
+
+.searchBtn
+{
+    width:20% !important;
+}
 
 .searchedList
 {
@@ -228,4 +261,9 @@ span.musicItemTitle:hover
 {
     display:inline-block;
     vertical-align:middle;
+}
+
+.modalSearch
+{
+    margin-bottom:10px;
 }

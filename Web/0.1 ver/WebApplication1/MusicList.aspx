@@ -27,12 +27,14 @@
     <div class="player">
         <div class="playerControl">
             <div id="seekSlider" class="seeker"></div>
+            <a class="replay"><img src="images/replayOn.png" alt="replay"/></a>
             <a class="ToLeft"><img src="images/ToLeft.png" alt="toLeft"/></a>
             <a class="leftwind"><img src="images/leftwind.png" alt="left"/></a>
             <a class="play"><img src="images/play.png" alt="play"/></a>
             <a class="pause"><img src="images/pause.png" style="display:none;" alt="pause"/></a>
             <a class="rightwind"><img src="images/rightwind.png" alt="right"/></a>
             <a class="ToRight"><img src="images/ToRight.png" alt="toRight"/></a>
+            <a class="shuffle"><img src="images/shuffleOff.png" alt="shuffle"/></a>
 
         </div>
     </div>
@@ -40,12 +42,8 @@
         <div class="content">
             <div class="controller">
                 <div class="search">
-                    <input type="text" class="form-control" id="txtSearchInput" placeholder="Type Keyword"/>
-                    <input type="button" class="btn btn-primary" id="btnSearchInput" value="Search"/>
-                    <div class="searchlistContent">
-                        <ul id="searchlist">
-                        </ul>
-                    </div>
+                    <input type="text" class="form-control searchTxt" id="txtSearchInput" placeholder="Type Keyword"/>
+                    <input type="button" class="btn btn-primary searchBtn" id="btnSearchInput" value="Search"/>
                 </div>
             </div>
             <div class="controller">
@@ -64,13 +62,18 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-body">
+                  <!-- search part -->
+                <div class="search modalSearch">
+                    <input type="text" class="form-control searchTxt" id="txtSearchInput2" placeholder="Type Keyword"/>
+                    <input type="button" class="btn btn-primary searchBtn" id="btnSearchInput2" value="Search"/>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                </div>
                   <!-- Nav tabs -->
                   <div role="tabpanel">
                       <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#allTabPanel" aria-controls="allTab" role="tab" data-toggle="tab">All</a></li>
                         <li role="presentation"><a href="#ytTabPanel" aria-controls="ytTab" role="tab" data-toggle="tab">Youtube only</a></li>
                         <li role="presentation"><a href="#scTabPanel" aria-controls="scTab" role="tab" data-toggle="tab">SoundCloud only</a></li>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                       </ul>
                   </div>
                   <!-- Tab panes -->
