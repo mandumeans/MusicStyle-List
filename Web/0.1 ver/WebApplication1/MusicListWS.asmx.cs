@@ -2,12 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
+using System.Web.Services;
 using System.Text;
 using System.Net;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.Services;
 using System.Web.Script.Serialization;
 using System.IO;
 using System.Xml;
@@ -22,23 +22,35 @@ using System.Data;
 using System.Web.Services.Protocols;
 using System.Web.Script.Services;
 
-namespace MusicList
+
+
+namespace MusicListWS
 {
-    public partial class MusicList : System.Web.UI.Page
+    /// <summary>
+    /// WebService1의 요약 설명입니다.
+    /// </summary>
+    [WebService(Namespace = "http://tempuri.org/")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [System.ComponentModel.ToolboxItem(false)]
+
+    [System.Web.Script.Services.ScriptService]
+    public class MusicListWS : System.Web.Services.WebService
     {
+
         public const string SOUNDCLOUD_CLIENT_KEY = "a2b4d87e3bac428d8467d6ea343d49ae";
 
-        protected void Page_Load(object sender, EventArgs e)
+        public class YoutubeValidationData
         {
-
+            public string title { get; set; }
         }
 
         [WebMethod]
-        public static string YoutubeURLValidation(string VID)
+        public string YoutubeURLValidation(string VID)
         {
             const string FAIL_STRING = "False";
             try
             {
+                Context.Response.ContentType = "application/json; charset=utf-8";
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://gdata.youtube.com/feeds/api/videos/" + VID);
                 request.Method = "HEAD";
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
@@ -52,11 +64,17 @@ namespace MusicList
                         var xmlDoc = new XmlDocument();
                         xmlDoc.Load("http://gdata.youtube.com/feeds/api/videos/" + VID);
                         XmlNodeList title = xmlDoc.GetElementsByTagName("title");
-                        return (title.Item(0)).InnerText;
+                        YoutubeValidationData YVD = new YoutubeValidationData
+                        {
+                            title = (title.Item(0)).InnerText
+                        };
+
+                        return JsonConvert.SerializeObject(YVD, Newtonsoft.Json.Formatting.Indented).ToString();
                     }
                 }
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 return FAIL_STRING;
             }
         }
@@ -69,7 +87,7 @@ namespace MusicList
         }
 
         [WebMethod]
-        public static string SoundcloudURLValidation(string URL)
+        public string SoundcloudURLValidation(string URL)
         {
             const string FAIL_STRING = "False";
 
@@ -77,8 +95,8 @@ namespace MusicList
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-               using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-               {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
@@ -125,7 +143,7 @@ namespace MusicList
         }
 
         [WebMethod]
-        public static string YoutubeKeywordSearch(string keyword)
+        public string YoutubeKeywordSearch(string keyword)
         {
             const string FAIL_STRING = "False";
             string url = "http://gdata.youtube.com/feeds/api/videos?q=" + keyword + "&max-results=10&alt=jsonc&v=2";
@@ -138,13 +156,13 @@ namespace MusicList
                 string result = reader.ReadToEnd();
                 stream.Close();
                 response.Close();
-                
+
                 JObject parsedResult = JObject.Parse(result);
                 JArray items = (JArray)parsedResult["data"]["items"];
                 JArray dataArrayToSend = new JArray();
 
                 foreach (JObject resultOne in items)
-                {                    
+                {
                     try
                     {
                         YoutubeSendData YSD = new YoutubeSendData
@@ -189,7 +207,7 @@ namespace MusicList
         }
 
         [WebMethod]
-        public static string SoundcloudKeywordSearch(string keyword)
+        public string SoundcloudKeywordSearch(string keyword)
         {
             const string FAIL_STRING = "False";
 
@@ -242,7 +260,7 @@ namespace MusicList
                 return FAIL_STRING;
             }
         }
-
+        
         //for mobile
 
         public const int maxResults = 10;
@@ -268,8 +286,7 @@ namespace MusicList
         }
 
         [WebMethod]
-        [ScriptMethod(UseHttpGet = true, ResponseFormat = ResponseFormat.Json)]
-        public static string YoutubeTrackSearch(string keyword, int index)
+        public string YoutubeTrackSearch(string keyword, int index)
         {
             string url = "http://gdata.youtube.com/feeds/api/videos?q=" + keyword + "&max-results=" + maxResults + "&alt=jsonc&v=2&start-index=" + (((index - 1) * maxResults) + 1);
 
@@ -319,7 +336,7 @@ namespace MusicList
             }
         }
 
-        public static int CheckOnlyYoutube(string id)
+        public int CheckOnlyYoutube(string id)
         {
             string url = "http://gdata.youtube.com/feeds/mobile/videos/" + id;
 
@@ -339,6 +356,7 @@ namespace MusicList
             return ONLY_YOUTUBE_TYPE;
         }
 
+        [WebMethod]
         public string SoundcloudTrackSearch(string keyword, int index)
         {
             string url = "https://api.soundcloud.com/tracks.json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&q= " + keyword + "&&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults);
@@ -384,8 +402,7 @@ namespace MusicList
                     }
                 }
 
-                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
-                return "asdf";
+                return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
             {
@@ -402,6 +419,7 @@ namespace MusicList
             public int type { get; set; } // Youtube, Soundcloud 1,2
         }
 
+        [WebMethod]
         public string YoutubePlaylistSearch(string keyword, int index)
         {
             string url = "https://gdata.youtube.com/feeds/api/playlists/snippets?&q=" + keyword + "&max-results=" + maxResults + "&alt=jsonc&v=2&start-index=" + (((index - 1) * maxResults) + 1);
@@ -448,6 +466,7 @@ namespace MusicList
             }
         }
 
+        [WebMethod]
         public string SoundcloudPlaylistSearch(string keyword, int index)
         {
             string url = "https://api.soundcloud.com/playlists.json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&q= " + keyword + "&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults);
@@ -492,7 +511,8 @@ namespace MusicList
                 return FAIL_STRING;
             }
         }
-        
+
+        [WebMethod]
         public string YoutubePlaylistDetailSearch(string id, int index)
         {
             string url = "https://gdata.youtube.com/feeds/api/playlists/" + id + "?start-index=" + (((index - 1) * maxResults) + 1) + "&max-results=" + maxResults + "&alt=jsonc&v=2";
@@ -543,6 +563,7 @@ namespace MusicList
             }
         }
 
+        [WebMethod]
         public string SoundCloudPlaylistDetailSearch(string id, int index)
         {
             string url = "https://api.soundcloud.com/playlists/" + id + ".json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults);

@@ -10,11 +10,6 @@ tag.src = 'https://www.youtube.com/iframe_api';
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-var wsBaseURL = "http://localhost:2188/MusicListWS.asmx";
-var YTValidationURL = wsBaseURL + "/YoutubeURLValidation";
-var SCValidationURL = wsBaseURL + "/SoundcloudURLValidation";
-var YTSearchURL = wsBaseURL + "/YoutubeKeywordSearch";
-var SCSearchURL = wsBaseURL + "/SoundcloudKeywordSearch";
 
 var Util = {
     ajaxHelper : function (url, data, cbSuccess, cbError) {
@@ -78,22 +73,21 @@ var MUSICLIST = {
             var nowVID = Youtube.FindUrlVideoID(UrlInput);
 
             if (Youtube.VideoURLValidation(UrlInput)) {
-                //Youtube Video
-                Util.ajaxHelper(YTValidationURL, '{"VID" : "' + nowVID + '"}',
+
+                Util.ajaxHelper('../MusicList.aspx/YoutubeURLValidation', '{"VID" : "' + nowVID + '"}',
                     function (result) {
                         var rawResult = result.d;
                         if (rawResult === 'False') {
                             alert('There is no video on that URL from Youtube');
                         }
                         else {
+
                             //Youtube video
                             if (!Youtube.isVIDExist(nowVID)) {
                                 alert('Already exists');
                                 return;
                             } else {
-                                var titleResult = jQuery.parseJSON(rawResult).title;
-
-                                MUSICLIST.AddNewVideoItem(VideoType.YouTube, UrlInput, titleResult, '');
+                                MUSICLIST.AddNewVideoItem(VideoType.YouTube, UrlInput, rawResult, '');
                             }
                         }
                     },
@@ -104,7 +98,7 @@ var MUSICLIST = {
             }
             else {
                 //Soundcloud video
-                Util.ajaxHelper(SCValidationURL, '{"URL" : "' + UrlInput + '"}',
+                Util.ajaxHelper('../MusicList.aspx/SoundcloudURLValidation', '{"URL" : "' + UrlInput + '"}',
                     function (result) {
                         var rawResult = result.d;
                         if (rawResult === 'False') {
@@ -328,7 +322,7 @@ var SEARCH = {
     },
     init: function (searchKeyword) {
         //Youtube Search
-        Util.ajaxHelper(YTSearchURL, '{"keyword" : "' + searchKeyword + '"}',
+        Util.ajaxHelper('../MusicList.aspx/YoutubeKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
             function (result) {
                 var rawResult = jQuery.parseJSON(result.d);
                 if (rawResult === 'False') {
@@ -374,7 +368,7 @@ var SEARCH = {
 
     soundCloudInit: function (searchKeyword) {
         //Soundcloud Search
-        Util.ajaxHelper(SCSearchURL, '{"keyword" : "' + searchKeyword + '"}',
+        Util.ajaxHelper('../MusicList.aspx/SoundcloudKeywordSearch', '{"keyword" : "' + searchKeyword + '"}',
             function (result) {
                 var rawResult = jQuery.parseJSON(result.d);
                 if (rawResult === 'False') {
