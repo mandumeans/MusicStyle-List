@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/media_player_drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:umanoDragView="@+id/media_palyer_layout"
+    sothree:umanoInitialState="hidden"
+    sothree:umanoShadowHeight="4dp" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/userplaylistdetail_activity_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/userplaylistdetail_activity_toolbar"
+            android:background="@color/white" >
+
+            <ListView
+                android:id="@+id/track_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@color/listview_divider"
+                android:dividerHeight="1dp" />
+
+            <ProgressBar
+                android:id="@+id/loading_progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/media_player_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <fragment
+            android:id="@+id/media_player_handle_fragment"
+            android:name="com.funny.developers.musicstylelist.fragment.FragmentForMediaPlayerHandler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <fragment
+            android:id="@+id/media_player_content_fragment"
+            android:name="com.funny.developers.musicstylelist.fragment.FragmentForMediaPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

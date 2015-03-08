@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- search array for internet search -->
+    <string-array name="action_search_in_searchview_array">
+        <item>Youtube</item>
+        <item>SoundCloud</item>
+    </string-array>
+    
+    <!-- search array for in playlist -->
+    <string-array name="action_search_in_playlistview_array">
+        <item>Title</item>
+        <item>Uploader</item>
+    </string-array>
+    
+    <!-- pageadapter array -->
+    <string-array name="navigation_titles_array">
+        <item>Search</item>
+        <item>Folder</item>
+        <item>Settings</item>
+    </string-array>
+    
+    <!-- prefer type array -->
+    <string-array name="user_prefer_type">
+        <item>Rap</item>
+        <item>Hip hop</item>
+        <item>RnB</item>
+        <item>Pop</item>
+        <item>Dance</item>
+        <item>Rock</item>
+        <item>Blues</item>
+        <item>Electronic</item>
+    </string-array>
+    
+    <string-array name="user_prefer_value_type">
+        <item>Rap</item>
+        <item>Hip hop</item>
+        <item>RnB</item>
+        <item>Pop</item>
+        <item>Dance</item>
+        <item>Rock</item>
+        <item>Blues</item>
+        <item>Electronic</item>
+    </string-array>
+    
+</resources>

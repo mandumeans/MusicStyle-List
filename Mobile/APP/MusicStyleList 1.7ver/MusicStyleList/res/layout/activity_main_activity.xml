@@ -1,0 +1,83 @@
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/media_player_drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:umanoDragView="@+id/media_palyer_layout"
+    sothree:umanoInitialState="hidden"
+    sothree:umanoShadowHeight="4dp" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/mainactivity_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:windowActionBarOverlay="true" />
+
+        <android.support.v4.widget.DrawerLayout
+            android:id="@+id/navigation_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/mainactivity_toolbar" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <com.funny.developers.musicstylelist.view.SlidingTabLayout
+                    android:id="@+id/mainfragment_viewpager_tabindicator"
+                    style="@style/SlidingTabStyle"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+
+                <View
+                    android:id="@+id/viewpager_split_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="5px"
+                    android:background="@color/listview_divider" />
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/mainfragment_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/navigation_drawer"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="@color/white"
+                android:choiceMode="singleChoice"
+                android:divider="@color/listview_divider"
+                android:dividerHeight="1dp" />
+        </android.support.v4.widget.DrawerLayout>
+    </RelativeLayout>
+
+    <LinearLayout 
+        android:id="@+id/media_player_layout"
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        android:orientation="vertical">
+        
+        <fragment 
+            android:name="com.funny.developers.musicstylelist.fragment.FragmentForMediaPlayerHandler"
+            android:id="@+id/media_player_handle_fragment"
+            android:layout_width="match_parent"
+	        android:layout_height="wrap_content"/>
+        
+        <fragment 
+            android:name="com.funny.developers.musicstylelist.fragment.FragmentForMediaPlayer"
+            android:id="@+id/media_player_content_fragment"
+            android:layout_width="match_parent"
+	        android:layout_height="wrap_content"/>
+        
+    </LinearLayout>
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>
