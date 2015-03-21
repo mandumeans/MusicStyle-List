@@ -53,6 +53,19 @@
                     <input type="button" class="btn btn-primary" id="btnClearList" value="Clear all"/>
                 </div>
             </div>
+            <div class="playlistNavigation">
+                <select class="form-control playListNav">
+                    <option>List1</option>
+                    <option>POP</option>
+                    <option>JAZZ</option>
+                </select>
+                <a class="listButton"><img src="images/plus.png" alt="addList"/></a>
+                <a class="listButton"><img src="images/rename.png" alt="renameList"/></a>
+                <a class="listButton"><img src="images/trash.png" alt="deleteList"/></a>
+                <!--<input type="button" class="btn btn-primary" id="btnAddList" value="Add"/>
+                <input type="button" class="btn btn-primary" id="btnRenameList" value="Rename"/>
+                <input type="button" class="btn btn-primary" id="btnDeleteList" value="Delete"/>-->
+            </div>
             <div class="playlistContent">
                 <ul id="playlist">
                 </ul>

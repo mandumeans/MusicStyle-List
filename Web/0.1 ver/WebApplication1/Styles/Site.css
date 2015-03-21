@@ -214,6 +214,21 @@ span.musicItemTitle:hover
     width:20% !important;
 }
 
+.playlistNavigation
+{
+    
+}
+.playListNav
+{
+    width:70% !important;  
+    display:inline !important;
+}
+
+.listButton img
+{
+    width:8%;
+}
+
 /* search
 -------http://localhost:2188/MusicList.aspx#---------------------------------------------------*/
 

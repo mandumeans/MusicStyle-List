@@ -40,7 +40,6 @@ var rightListStatus;
 var MUSICLIST = {
     init: function () {
         rightListStatus = false;
-
         $(window).resize(function () {
             if ($('.video').find('iframe').length > 0) {
                 $('.video').find('iframe').css('width', $('.video').css('width'))
