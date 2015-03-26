@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile publishUrl="ftp://112.175.14.202:5168/www/" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="프로필1" publishMethod="FTP" replaceMatchingFiles="True" userName="rlaqnqn" savePWD="False" userPWD="" SelectedForPublish="True">
+    <file relUrl="bin/Google.GData.Analytics.dll" publishTime="11/08/2014 11:14:34" />
+    <file relUrl="Styles/bootstrap.css" publishTime="11/27/2014 11:46:28" />
+    <file relUrl="MusicListWS.asmx" publishTime="03/08/2015 13:31:25" />
+    <file relUrl="Global.asax" publishTime="11/08/2014 11:14:34" />
+    <file relUrl="Site.Master" publishTime="12/27/2014 17:27:50" />
+    <file relUrl="Styles/Site.css" publishTime="03/24/2015 18:23:01" />
+    <file relUrl="bin/Google.GData.Extensions.dll" publishTime="11/08/2014 11:14:34" />
+    <file relUrl="bin/Google.GData.Client.dll" publishTime="11/08/2014 11:14:34" />
+    <file relUrl="Scripts/SCWidgetAPI.js" publishTime="11/27/2014 11:46:28" />
+    <file relUrl="Scripts/musicPlayer.js" publishTime="03/08/2015 13:31:25" />
+    <file relUrl="bin/Google.GData.YouTube.dll" publishTime="11/08/2014 11:14:34" />
+    <file relUrl="Scripts/json2.js" publishTime="11/08/2014 11:14:34" />
+    <file relUrl="Styles/bootstrap-theme.min.css" publishTime="11/27/2014 11:46:28" />
+    <file relUrl="Scripts/jquery-1.11.1.min.js" publishTime="11/27/2014 11:46:28" />
+    <file relUrl="MusicList.aspx" publishTime="03/24/2015 18:23:01" />
+    <file relUrl="Default.aspx" publishTime="11/08/2014 11:14:34" />
+    <file relUrl="bin/Newtonsoft.Json.dll" publishTime="11/08/2014 11:14:34" />
+    <file relUrl="bin/WebApplication1.pdb" publishTime="03/26/2015 12:14:57" />
+    <file relUrl="Scripts/soundcloud.js" publishTime="03/08/2015 13:31:25" />
+    <file relUrl="Scripts/MusicList.js" publishTime="03/24/2015 18:23:01" />
+    <file relUrl="bin/WebApplication1.dll" publishTime="03/26/2015 12:14:58" />
+    <file relUrl="Styles/bootstrap-theme.css" publishTime="11/27/2014 11:46:28" />
+    <file relUrl="Scripts/youtube.js" publishTime="03/08/2015 13:31:25" />
+    <file relUrl="Web.config" publishTime="03/26/2015 12:15:01" />
+    <file relUrl="Scripts/bootstrap.js" publishTime="11/27/2014 11:46:28" />
+    <file relUrl="Styles/bootstrap.min.css" publishTime="11/27/2014 11:46:28" />
+    <file relUrl="Scripts/npm.js" publishTime="11/27/2014 11:46:28" />
+    <file relUrl="Scripts/bootstrap.min.js" publishTime="11/27/2014 11:46:28" />
+  </publishProfile>
+</publishData>
