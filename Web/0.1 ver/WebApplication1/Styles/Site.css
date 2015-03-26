@@ -151,7 +151,7 @@ color: #000;
     color : #EAEAEA;
 }
 
-#playlist
+.playlistContent ul
 {
     list-style : none;
     padding-left : 0px;

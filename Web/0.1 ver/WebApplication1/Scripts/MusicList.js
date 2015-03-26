@@ -10,7 +10,7 @@ tag.src = 'https://www.youtube.com/iframe_api';
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-var wsBaseURL = "http://localhost:2188/MusicListWS.asmx";
+var wsBaseURL = "../MusicListWS.asmx";
 var YTValidationURL = wsBaseURL + "/YoutubeURLValidation";
 var SCValidationURL = wsBaseURL + "/SoundcloudURLValidation";
 var YTSearchURL = wsBaseURL + "/YoutubeKeywordSearch";
@@ -64,9 +64,9 @@ var MUSICLIST = {
                 }
             });
             $('.musicItemRemove').click(function () {
-                MUSICLIST.DeleteVideoFromList($(this).parent().attr('url'));
+                MUSICLIST.DeleteVideoFromList($(this).parent());
                 //Make list to cookie 
-                var playList = $('#playlist').html();
+                var playList = MUSICLIST.getActiveList().html();
                 MUSICLIST.setCookie("playStyle", playList, 20);
                 //Make list to cookie end
             });
@@ -149,12 +149,18 @@ var MUSICLIST = {
                 $("#btnSearchInput2").click();
             }
         });
+        $(".playListNav").change(function () {
+            $(".playlistTab").find("div").each(function (index) {
+                $(this).hide();
+            });
+            MUSICLIST.getActiveListTab().show();
+        });
     },
     AddNewVideoItem: function (type, url, title, thumb) {
         var videoItemType;
         //var vid = Youtube.FindUrlVideoID(url);
         var listString = '<li class="musicListItem" type="' + type + '" url = "' + url + '" thumb = "' + thumb + '" isPlaying = "false"><span class="musicItemTitle">' + title + '</span><a class="musicItemRemove">X</a></li>'
-        $('#playlist').append(listString);
+        MUSICLIST.getActiveList().append(listString);
 
         //Make list to cookie 
         var playList = $('#playlist').html();
@@ -176,16 +182,16 @@ var MUSICLIST = {
             }
         });
         $('.musicItemRemove').click(function () {
-            MUSICLIST.DeleteVideoFromList($(this).parent().attr('url'));
+            MUSICLIST.DeleteVideoFromList($(this).parent());
             //Make list to cookie 
-            var playList = $('#playlist').html();
+            var playList = MUSICLIST.getActiveList().html();
             MUSICLIST.setCookie("playStyle", playList, 20);
             //Make list to cookie end
         });
     },
-    DeleteVideoFromList: function (URL) {
-        nextVideoURL = MUSICLIST.getNextVideo(URL);
-        $('.musicListItem[url="' + URL + '"]').remove();
+    DeleteVideoFromList: function (parent) {
+        nextVideoURL = MUSICLIST.getNextVideo(parent.attr("URL"));
+        parent.remove();
     },
     //Change isPlaying status attribue
     playingStatusChange: function (URL) {
@@ -314,6 +320,12 @@ var MUSICLIST = {
             cValue = cookieData.substring(start, end);
         }
         return unescape(cValue);
+    },
+    getActiveListTab: function () {
+        return $(".playlistTab").find("div[name=" + $(".playListNav option:selected").attr("name") + "]");
+    },
+    getActiveList: function () {
+        return $(".playlistTab").find("div[name=" + $(".playListNav option:selected").attr("name") + "]").find("ul");
     }
 }
 

@@ -55,9 +55,9 @@
             </div>
             <div class="playlistNavigation">
                 <select class="form-control playListNav">
-                    <option>List1</option>
-                    <option>POP</option>
-                    <option>JAZZ</option>
+                    <option name="List1">List1</option>
+                    <option name="List2">POP</option>
+                    <option name="List3">JAZZ</option>
                 </select>
                 <a class="listButton"><img src="images/plus.png" alt="addList"/></a>
                 <a class="listButton"><img src="images/rename.png" alt="renameList"/></a>
@@ -66,9 +66,19 @@
                 <input type="button" class="btn btn-primary" id="btnRenameList" value="Rename"/>
                 <input type="button" class="btn btn-primary" id="btnDeleteList" value="Delete"/>-->
             </div>
-            <div class="playlistContent">
-                <ul id="playlist">
-                </ul>
+            <div class="playlistTab">
+                <div class="tab-pane playlistContent" name="List1">
+                    <ul>
+                    </ul>
+                </div>
+                <div class="tab-pane playlistContent" name="List2" style="display:none;">
+                    <ul>
+                    </ul>
+                </div>
+                <div class="tab-pane playlistContent" name="List3" style="display:none;">
+                    <ul>
+                    </ul>
+                </div>
             </div>
         </div>
         <div id = "searchModal" class="modal fade">

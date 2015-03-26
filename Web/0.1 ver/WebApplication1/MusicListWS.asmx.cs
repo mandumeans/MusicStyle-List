@@ -286,7 +286,7 @@ namespace MusicListWS
         }
 
         [WebMethod]
-        public string YoutubeTrackSearch(string keyword, int index)
+        public void YoutubeTrackSearch(string keyword, int index)
         {
             string url = "http://gdata.youtube.com/feeds/api/videos?q=" + keyword + "&max-results=" + maxResults + "&alt=jsonc&v=2&start-index=" + (((index - 1) * maxResults) + 1);
 
@@ -327,12 +327,16 @@ namespace MusicListWS
                     {
                     }
                 }
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
 
-                return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
             {
-                return FAIL_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return FAIL_STRING;
             }
         }
 
@@ -357,7 +361,7 @@ namespace MusicListWS
         }
 
         [WebMethod]
-        public string SoundcloudTrackSearch(string keyword, int index)
+        public void SoundcloudTrackSearch(string keyword, int index)
         {
             string url = "https://api.soundcloud.com/tracks.json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&q= " + keyword + "&&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults);
             try
@@ -402,11 +406,15 @@ namespace MusicListWS
                     }
                 }
 
-                return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
             {
-                return FAIL_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return FAIL_STRING;
             }
         }
 
@@ -420,7 +428,7 @@ namespace MusicListWS
         }
 
         [WebMethod]
-        public string YoutubePlaylistSearch(string keyword, int index)
+        public void YoutubePlaylistSearch(string keyword, int index)
         {
             string url = "https://gdata.youtube.com/feeds/api/playlists/snippets?&q=" + keyword + "&max-results=" + maxResults + "&alt=jsonc&v=2&start-index=" + (((index - 1) * maxResults) + 1);
 
@@ -458,16 +466,20 @@ namespace MusicListWS
                     }
                 }
 
-                return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
             {
-                return FAIL_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
         }
 
         [WebMethod]
-        public string SoundcloudPlaylistSearch(string keyword, int index)
+        public void SoundcloudPlaylistSearch(string keyword, int index)
         {
             string url = "https://api.soundcloud.com/playlists.json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&q= " + keyword + "&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults);
 
@@ -504,16 +516,20 @@ namespace MusicListWS
                     }
                 }
 
-                return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
             {
-                return FAIL_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
         }
 
         [WebMethod]
-        public string YoutubePlaylistDetailSearch(string id, int index)
+        public void YoutubePlaylistDetailSearch(string id, int index)
         {
             string url = "https://gdata.youtube.com/feeds/api/playlists/" + id + "?start-index=" + (((index - 1) * maxResults) + 1) + "&max-results=" + maxResults + "&alt=jsonc&v=2";
 
@@ -555,16 +571,20 @@ namespace MusicListWS
                     }
                 }
 
-                return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
             {
-                return FAIL_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
         }
 
         [WebMethod]
-        public string SoundCloudPlaylistDetailSearch(string id, int index)
+        public void SoundCloudPlaylistDetailSearch(string id, int index)
         {
             string url = "https://api.soundcloud.com/playlists/" + id + ".json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults);
 
@@ -611,11 +631,15 @@ namespace MusicListWS
                     }
                 }
 
-                return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
             {
-                return FAIL_STRING;
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
         }
     }
