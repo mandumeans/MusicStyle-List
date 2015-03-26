@@ -642,5 +642,112 @@ namespace MusicListWS
                 //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
         }
+
+        [WebMethod]
+        public void YoutubeHotTrackSearch(string category, int index)
+        {
+            Context.Response.ContentType = "application/json; charset=utf-8";
+            string url = "http://gdata.youtube.com/feeds/api/videos?category=" + category + "&max-results=" + maxResults + "&alt=jsonc&v=2&start-index=" + (((index - 1) * maxResults) + 1) + "&orderby=viewCount";
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JObject parsedResult = JObject.Parse(result);
+                JArray items = (JArray)parsedResult["data"]["items"];
+                ArrayList dataList = new ArrayList();
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        SearchDataModel searchDataModel = new SearchDataModel
+                        {
+                            id = resultOne["id"].ToString(),
+                            title = resultOne["title"].ToString(),
+                            thumbnail = resultOne["thumbnail"]["sqDefault"].ToString(),
+                            viewCount = resultOne["viewCount"].ToString(),
+                            uploaded = resultOne["uploaded"].ToString(),
+                            duration = resultOne["duration"].ToString(),
+                            uploader = resultOne["uploader"].ToString(),
+                            onlyYoutube = CheckOnlyYoutube(resultOne["id"].ToString()),
+                            trackType = YOUTUBE_TYPE
+                        };
+
+                        dataList.Add(searchDataModel);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+            }
+            catch (Exception ex)
+            {
+                Context.Response.Write(FAIL_STRING);
+            }
+        }
+
+        [WebMethod]
+        public void SoundcloudHotTrackSearch(string category, int index)
+        {
+            Context.Response.ContentType = "application/json; charset=utf-8";
+            string url = "https://api.soundcloud.com/tracks.json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&genres= " + category + "&&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults) + "&order=hotness";
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JArray items = JArray.Parse(result);
+                ArrayList dataList = new ArrayList();
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        if (resultOne["streamable"].ToString().Equals("false"))
+                        {
+                            continue;
+                        }
+
+                        SearchDataModel searchDataModel = new SearchDataModel
+                        {
+                            id = resultOne["id"].ToString(),
+                            title = resultOne["title"].ToString(),
+                            thumbnail = (resultOne["artwork_url"] == null ? "" : resultOne["artwork_url"]).ToString(),
+                            viewCount = resultOne["playback_count"].ToString(),
+                            uploaded = resultOne["created_at"].ToString(),
+                            duration = resultOne["duration"].ToString(),
+                            uploader = resultOne["user"]["username"].ToString(),
+                            onlyYoutube = NOT_ONLY_YOUTUBE_TYPE,
+                            trackType = SOUND_CLOUD_TYPE
+                        };
+
+                        dataList.Add(searchDataModel);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+            }
+            catch (Exception ex)
+            {
+                Context.Response.Write(FAIL_STRING);
+            }
+        }
     }
 }
