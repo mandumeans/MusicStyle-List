@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    
+    <com.funny.developers.musicstylelist.view.SearchTrackListView 
+        android:id="@+id/search_track_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:divider="@color/listview_divider"
+        android:dividerHeight="1dp"/>
+    
+    <TextView
+        android:id="@+id/empty_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/empty_search_list"
+        android:textColor="#555555" />
+    
+    <ProgressBar 
+        android:id="@+id/loading_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mediaplayer_controller_backgound"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dip" >
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:background="@drawable/ic_action_back" />
+
+        <ImageButton
+            android:id="@+id/lock_button"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:background="@drawable/selector_lock_button" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:id="@+id/youtube_player_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/youtube_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/adView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    sothree:adSize="BANNER"
+                    sothree:adUnitId="ca-app-pub-8722652440187933/8629871606" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@id/adView"
+                    android:orientation="vertical" >
+
+                    <com.funny.developers.musicstylelist.player.MusicStyleListMediaPlayerController
+                        android:id="@+id/media_player_controller"
+                        android:layout_width="fill_parent"
+                        android:layout_height="60dip"
+                        android:background="@color/mediaplayer_background" />
+
+                    <ListView
+                        android:id="@+id/track_list_view"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@color/listview_bacground"
+                        android:divider="@color/listview_divider"
+                        android:dividerHeight="1dp" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/lock_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#88333333"
+                    android:clickable="true"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
