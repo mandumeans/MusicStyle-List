@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="grey">#424242</color>
+    
+    <color name="adview_bg">#323232</color>
+    <color name="mediaplayer_playview_background">#000000</color>
+    <color name="mediaplayer_handle_divide">#B71C1C</color>
+    <color name="mediaplayer_handle_background">#424242</color>
+    <color name="mediaplayer_background">#EEEEEE</color>
+    <color name="mediaplayer_controller_backgound">#424242</color>
+    <color name="listview_divider">#E0E0E0</color>
+    <color name="listview_bacground">#FFFFFF</color>
+    <color name="create_folder_background">#F5F5F5</color>
+    <color name="pressed_color">#BDBDBD</color>
+    <color name="default_color">#FFFFFF</color>
+    <color name="navi_background">#212121</color>
+    <color name="navi_text_color">#FFFFFF</color>
+    <color name="dialog_text_color">#757575</color>
+</resources>

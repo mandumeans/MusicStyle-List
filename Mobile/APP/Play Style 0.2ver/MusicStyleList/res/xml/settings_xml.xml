@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <com.funny.developers.musicstylelist.view.CustomPreferenceCategory android:title="User settings" >
+        <ListPreference
+            android:defaultValue="Ballad"
+            android:dialogTitle="@string/setting_choose_genre_dialog_title"
+            android:entries="@array/user_prefer_type"
+            android:entryValues="@array/user_prefer_value_type"
+            android:key="pref_prefer_type"
+            android:summary="@string/setting_choose_genre_summary"
+            android:title="@string/setting_choose_genre_title" />
+
+    </com.funny.developers.musicstylelist.view.CustomPreferenceCategory>
+    <com.funny.developers.musicstylelist.view.CustomPreferenceCategory android:title="Connection and data" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_only_wifi"
+            android:summary="@string/setting_wifi_lock_summary"
+            android:title="@string/setting_wifi_lock_title" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_only_youtube_player"
+            android:summary="@string/setting_use_youtube_player_summary"
+            android:title="@string/setting_use_youtube_player_title" />
+    </com.funny.developers.musicstylelist.view.CustomPreferenceCategory>
+    <com.funny.developers.musicstylelist.view.CustomPreferenceCategory android:title="Developers" >
+        <Preference 
+            android:summary="@string/setting_developer_summary"
+            android:title="@string/setting_developer_title"/>
+    </com.funny.developers.musicstylelist.view.CustomPreferenceCategory>
+
+</PreferenceScreen>

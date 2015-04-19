@@ -749,5 +749,100 @@ namespace MusicListWS
                 Context.Response.Write(FAIL_STRING);
             }
         }
+
+        private String youtube_api_key = "AIzaSyCxJWow19uFJpVPVrSU9n2cynywwqIyy6s";
+
+        [WebMethod]
+        public String YoutubeV3TrackDuration(string videoId)
+        {
+            string url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=" + videoId + "&key=" + youtube_api_key;
+            string duration = "";
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JObject parsedResult = JObject.Parse(result);
+                JArray items = (JArray)parsedResult["items"];
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        duration = resultOne["contentDetails"]["duration"].ToString();
+                    }
+                    catch (Exception e)
+                    {
+                        duration = "PT0M0S";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //PT0H0S
+                duration = "PT0M0S";
+            }
+
+            return duration;
+        }
+
+        [WebMethod]
+        public void YoutubeV3TrackSearch(string keyword, string pageToken)
+        {
+            string url = "https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&q=" + keyword + "&maxResults=" + maxResults + "&pageToken=" + pageToken + "&key=" + youtube_api_key;
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JObject parsedResult = JObject.Parse(result);
+                JArray items = (JArray)parsedResult["items"];
+                ArrayList dataList = new ArrayList();
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        SearchDataModel searchDataModel = new SearchDataModel
+                        {
+                            id = resultOne["id"]["videoId"].ToString(),
+                            title = resultOne["snippet"]["title"].ToString(),
+                            thumbnail = resultOne["snippet"]["thumbnails"]["default"]["url"].ToString(),
+                            duration = YoutubeV3TrackDuration(resultOne["id"]["videoId"].ToString()),
+                            uploader = resultOne["snippet"]["channelTitle"].ToString(),
+                            onlyYoutube = 0,
+                            trackType = YOUTUBE_TYPE
+                        };
+
+                        dataList.Add(searchDataModel);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+            }
+            catch (Exception ex)
+            {
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return FAIL_STRING;
+            }
+        }
     }
 }
