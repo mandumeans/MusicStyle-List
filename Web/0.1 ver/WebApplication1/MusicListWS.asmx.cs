@@ -750,8 +750,8 @@ namespace MusicListWS
             }
         }
 
-        private String youtube_api_key = "AIzaSyCxJWow19uFJpVPVrSU9n2cynywwqIyy6s";
-
+        private String youtube_api_key = "AIzaSyAU_RCgyb2gf9gVht1OulCXbNq7re8jti8";
+        
         [WebMethod]
         public String YoutubeV3TrackDuration(string videoId)
         {
@@ -796,7 +796,6 @@ namespace MusicListWS
         public void YoutubeV3TrackSearch(string keyword, string pageToken)
         {
             string url = "https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&q=" + keyword + "&maxResults=" + maxResults + "&pageToken=" + pageToken + "&key=" + youtube_api_key;
-
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
