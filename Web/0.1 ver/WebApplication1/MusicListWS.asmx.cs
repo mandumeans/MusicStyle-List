@@ -37,7 +37,8 @@ namespace MusicListWS
     public class MusicListWS : System.Web.Services.WebService
     {
 
-        public const string SOUNDCLOUD_CLIENT_KEY = "a2b4d87e3bac428d8467d6ea343d49ae";
+        public const String SOUNDCLOUD_CLIENT_KEY = "a2b4d87e3bac428d8467d6ea343d49ae";
+        public const String YOUTUBE_API_KEY = "AIzaSyAU_RCgyb2gf9gVht1OulCXbNq7re8jti8";
 
         public class YoutubeValidationData
         {
@@ -266,11 +267,12 @@ namespace MusicListWS
         public const int maxResults = 10;
         public const int YOUTUBE_TYPE = 1;
         public const int SOUND_CLOUD_TYPE = 2;
-        public const int ONLY_YOUTUBE_TYPE = 1;
-        public const int NOT_ONLY_YOUTUBE_TYPE = 2;
-        public const string FAIL_STRING = "{ \"result\":fail}";
-        public const string RESULT_FIRST_STRING = "{ \"list\":";
+        public const string FAIL_STRING = "{\"result\":fail}";
+        public const string RESULT_FIRST_STRING = "{";
         public const string RESULT_LAST_STRING = "}";
+        public const string RESULT_LIST_STRING = "\"list\":";
+        public const string RESULT_NEXT_TOKEN_STRING = "\n\"nextToken\":";
+        public const string NOT_NEXT_TOKEN = "not_next_token";
 
         public class SearchDataModel
         {
@@ -278,17 +280,24 @@ namespace MusicListWS
             public string title { get; set; }
             public string duration { get; set; }
             public string thumbnail { get; set; } //Soundcloud : artwork_url
-            public string uploaded { get; set; } //Soundcloud : created_at
-            public string viewCount { get; set; } //Soundcould : playback_count
             public string uploader { get; set; } //Soundcloud : user.username
             public int trackType { get; set; } //modelType youtube :1, soundcloud:2
-            public int onlyYoutube { get; set; } //modelType true : 1, false : 2
+        }
+
+        public class SearchPlaylistModel
+        {
+            public string id { get; set; } //Soundcould : id, Youtube : id
+            public string title { get; set; }
+            public string thumbnail { get; set; } //Soundcloud : artwork_url
+            public string size { get; set; } //Soundcould : track_count
+            public int type { get; set; } // Youtube, Soundcloud 1,2
         }
 
         [WebMethod]
-        public void YoutubeTrackSearch(string keyword, int index)
+        public String YoutubeTrackDuration(string videoId)
         {
-            string url = "http://gdata.youtube.com/feeds/api/videos?q=" + keyword + "&max-results=" + maxResults + "&alt=jsonc&v=2&start-index=" + (((index - 1) * maxResults) + 1);
+            string url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=" + videoId + "&key=" + YOUTUBE_API_KEY;
+            string duration = "";
 
             try
             {
@@ -301,8 +310,92 @@ namespace MusicListWS
                 response.Close();
 
                 JObject parsedResult = JObject.Parse(result);
-                JArray items = (JArray)parsedResult["data"]["items"];
+                JArray items = (JArray)parsedResult["items"];
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        duration = resultOne["contentDetails"]["duration"].ToString();
+                    }
+                    catch (Exception e)
+                    {
+                        duration = "PT0M0S";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //PT0H0S
+                duration = "PT0M0S";
+            }
+
+            return duration;
+        }
+
+        [WebMethod]
+        public String YoutubePlaylistSize(string playlistId)
+        {
+            string url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=0&playlistId=" + playlistId + "&key=" + YOUTUBE_API_KEY;
+            String size = "0";
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JObject parsedResult = JObject.Parse(result);
+
+                try
+                {
+                    size = parsedResult["pageInfo"]["totalResults"].ToString();
+                }
+                catch (Exception ex)
+                {
+                    size = "0";
+                }
+            }
+            catch (Exception ex)
+            {
+                //PT0H0S
+                size = "0";
+            }
+
+            return size;
+        }
+
+        [WebMethod]
+        public void YoutubeHotTrackSearch(string pageToken, string videoCategory)
+        {
+            string url = "https://www.googleapis.com/youtube/v3/search?type=video&part=snippet" + "&maxResults=" + maxResults + "&pageToken=" + pageToken + "&order=viewCount&videoCategoryId=" + videoCategory + "&key=" + YOUTUBE_API_KEY;
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JObject parsedResult = JObject.Parse(result);
+                JArray items = (JArray)parsedResult["items"];
                 ArrayList dataList = new ArrayList();
+
+                String token = null;
+                try
+                {
+                    token = parsedResult["nextPageToken"].ToString();
+                }
+                catch (Exception ex)
+                {
+                    token = NOT_NEXT_TOKEN;
+                }
 
                 foreach (JObject resultOne in items)
                 {
@@ -310,14 +403,11 @@ namespace MusicListWS
                     {
                         SearchDataModel searchDataModel = new SearchDataModel
                         {
-                            id = resultOne["id"].ToString(),
-                            title = resultOne["title"].ToString(),
-                            thumbnail = resultOne["thumbnail"]["sqDefault"].ToString(),
-                            viewCount = resultOne["viewCount"].ToString(),
-                            uploaded = resultOne["uploaded"].ToString(),
-                            duration = resultOne["duration"].ToString(),
-                            uploader = resultOne["uploader"].ToString(),
-                            onlyYoutube = CheckOnlyYoutube(resultOne["id"].ToString()),
+                            id = resultOne["id"]["videoId"].ToString(),
+                            title = resultOne["snippet"]["title"].ToString(),
+                            thumbnail = resultOne["snippet"]["thumbnails"]["default"]["url"].ToString(),
+                            duration = YoutubeTrackDuration(resultOne["id"]["videoId"].ToString()),
+                            uploader = resultOne["snippet"]["channelTitle"].ToString(),
                             trackType = YOUTUBE_TYPE
                         };
 
@@ -328,7 +418,7 @@ namespace MusicListWS
                     }
                 }
                 Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                Context.Response.Write(RESULT_FIRST_STRING + RESULT_NEXT_TOKEN_STRING + "\"" + token + "\"," + RESULT_LIST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
 
                 //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
@@ -340,24 +430,242 @@ namespace MusicListWS
             }
         }
 
-        public int CheckOnlyYoutube(string id)
+        [WebMethod]
+        public void YoutubeTrackSearch(string keyword, string pageToken)
         {
-            string url = "http://gdata.youtube.com/feeds/mobile/videos/" + id;
-
-            // Retrieve XML document  
-            XmlTextReader reader = new XmlTextReader(url);
-
-            // Skip non-significant whitespace  
-            reader.WhitespaceHandling = WhitespaceHandling.Significant;
-            while (reader.Read())
+            string url = "https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&q=" + keyword + "&maxResults=" + maxResults + "&pageToken=" + pageToken + "&key=" + YOUTUBE_API_KEY;
+            try
             {
-                if (reader.Name.Contains("media:content"))
-                {
-                    return NOT_ONLY_YOUTUBE_TYPE;
-                }
-            }
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
 
-            return ONLY_YOUTUBE_TYPE;
+                JObject parsedResult = JObject.Parse(result);
+                JArray items = (JArray)parsedResult["items"];
+                ArrayList dataList = new ArrayList();
+
+                String token = null;
+                try
+                {
+                    token = parsedResult["nextPageToken"].ToString();
+                }
+                catch (Exception ex)
+                {
+                    token = NOT_NEXT_TOKEN;
+                }
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        SearchDataModel searchDataModel = new SearchDataModel
+                        {
+                            id = resultOne["id"]["videoId"].ToString(),
+                            title = resultOne["snippet"]["title"].ToString(),
+                            thumbnail = resultOne["snippet"]["thumbnails"]["default"]["url"].ToString(),
+                            duration = YoutubeTrackDuration(resultOne["id"]["videoId"].ToString()),
+                            uploader = resultOne["snippet"]["channelTitle"].ToString(),
+                            trackType = YOUTUBE_TYPE
+                        };
+
+                        dataList.Add(searchDataModel);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + RESULT_NEXT_TOKEN_STRING + "\"" + token + "\"," + RESULT_LIST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+            }
+            catch (Exception ex)
+            {
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return FAIL_STRING;
+            }
+        }
+
+        [WebMethod]
+        public void YoutubePlaylistSearch(string keyword, string pageToken)
+        {
+            string url = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=playlist&q=" + keyword + "&maxResults=" + maxResults + "&pageToken=" + pageToken + "&key=" + YOUTUBE_API_KEY;
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JObject parsedResult = JObject.Parse(result);
+                JArray items = (JArray)parsedResult["items"];
+                ArrayList dataList = new ArrayList();
+
+                String token = null;
+                try
+                {
+                    token = parsedResult["nextPageToken"].ToString();
+                }
+                catch (Exception ex)
+                {
+                    token = NOT_NEXT_TOKEN;
+                }
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        SearchPlaylistModel searchPlaylistModel = new SearchPlaylistModel
+                        {
+                            id = resultOne["id"]["playlistId"].ToString(),
+                            title = resultOne["snippet"]["title"].ToString(),
+                            thumbnail = resultOne["snippet"]["thumbnails"]["default"]["url"].ToString(),
+                            size = YoutubePlaylistSize(resultOne["id"]["playlistId"].ToString()),
+                            type = YOUTUBE_TYPE
+                        };
+
+                        dataList.Add(searchPlaylistModel);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + RESULT_NEXT_TOKEN_STRING + "\"" + token + "\"," + RESULT_LIST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+            }
+            catch (Exception ex)
+            {
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+            }
+        }
+
+        //YoutubePlaylistDetailSearch
+
+        [WebMethod]
+        public void YoutubePlaylistDetailSearch(string playlistId, string pageToken)
+        {
+            string url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2C+contentDetails&maxResults=" + maxResults + "&playlistId=" + playlistId + "&pageToken=" + pageToken + "&key=" + YOUTUBE_API_KEY;
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JObject parsedResult = JObject.Parse(result);
+                JArray items = (JArray)parsedResult["items"];
+                ArrayList dataList = new ArrayList();
+
+                String token = null;
+                try
+                {
+                    token = parsedResult["nextPageToken"].ToString();
+                }
+                catch (Exception ex)
+                {
+                    token = NOT_NEXT_TOKEN;
+                }
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        SearchDataModel searchDataModel = new SearchDataModel
+                        {
+                            id = resultOne["contentDetails"]["videoId"].ToString(),
+                            title = resultOne["snippet"]["title"].ToString(),
+                            thumbnail = resultOne["snippet"]["thumbnails"]["default"]["url"].ToString(),
+                            duration = YoutubeTrackDuration(resultOne["contentDetails"]["videoId"].ToString()),
+                            uploader = resultOne["snippet"]["channelTitle"].ToString(),
+                            trackType = YOUTUBE_TYPE
+                        };
+
+                        dataList.Add(searchDataModel);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(RESULT_FIRST_STRING + RESULT_NEXT_TOKEN_STRING + "\"" + token + "\"," + RESULT_LIST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+
+                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
+            }
+            catch (Exception ex)
+            {
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                Context.Response.Write(FAIL_STRING);
+                //return FAIL_STRING;
+            }
+        }
+
+        [WebMethod]
+        public void SoundcloudHotTrackSearch(string category, int index)
+        {
+            Context.Response.ContentType = "application/json; charset=utf-8";
+            string url = "https://api.soundcloud.com/tracks.json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&genres= " + category + "&&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults) + "&order=hotness";
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                stream.Close();
+                response.Close();
+
+                JArray items = JArray.Parse(result);
+                ArrayList dataList = new ArrayList();
+
+                foreach (JObject resultOne in items)
+                {
+                    try
+                    {
+                        if (resultOne["streamable"].ToString().Equals("false"))
+                        {
+                            continue;
+                        }
+
+                        SearchDataModel searchDataModel = new SearchDataModel
+                        {
+                            id = resultOne["id"].ToString(),
+                            title = resultOne["title"].ToString(),
+                            thumbnail = (resultOne["artwork_url"] == null ? "" : resultOne["artwork_url"]).ToString(),
+                            duration = resultOne["duration"].ToString(),
+                            uploader = resultOne["user"]["username"].ToString(),
+                            trackType = SOUND_CLOUD_TYPE
+                        };
+
+                        dataList.Add(searchDataModel);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+
+                Context.Response.Write(RESULT_FIRST_STRING + RESULT_NEXT_TOKEN_STRING + "\"" + (index + 1) + "\"," + RESULT_LIST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+            }
+            catch (Exception ex)
+            {
+                Context.Response.Write(FAIL_STRING);
+            }
         }
 
         [WebMethod]
@@ -391,11 +699,8 @@ namespace MusicListWS
                             id = resultOne["id"].ToString(),
                             title = resultOne["title"].ToString(),
                             thumbnail = (resultOne["artwork_url"] == null ? "" : resultOne["artwork_url"]).ToString(),
-                            viewCount = resultOne["playback_count"].ToString(),
-                            uploaded = resultOne["created_at"].ToString(),
                             duration = resultOne["duration"].ToString(),
                             uploader = resultOne["user"]["username"].ToString(),
-                            onlyYoutube = NOT_ONLY_YOUTUBE_TYPE,
                             trackType = SOUND_CLOUD_TYPE
                         };
 
@@ -407,7 +712,7 @@ namespace MusicListWS
                 }
 
                 Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                Context.Response.Write(RESULT_FIRST_STRING + RESULT_NEXT_TOKEN_STRING + "\"" + (index + 1) + "\"," + RESULT_LIST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
                 //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
@@ -415,66 +720,6 @@ namespace MusicListWS
                 Context.Response.ContentType = "application/json; charset=utf-8";
                 Context.Response.Write(FAIL_STRING);
                 //return FAIL_STRING;
-            }
-        }
-
-        public class SearchPlaylistModel
-        {
-            public string id { get; set; } //Soundcould : id, Youtube : id
-            public string title { get; set; }
-            public string thumbnail { get; set; } //Soundcloud : artwork_url
-            public string size { get; set; } //Soundcould : track_count
-            public int type { get; set; } // Youtube, Soundcloud 1,2
-        }
-
-        [WebMethod]
-        public void YoutubePlaylistSearch(string keyword, int index)
-        {
-            string url = "https://gdata.youtube.com/feeds/api/playlists/snippets?&q=" + keyword + "&max-results=" + maxResults + "&alt=jsonc&v=2&start-index=" + (((index - 1) * maxResults) + 1);
-
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                string result = reader.ReadToEnd();
-                stream.Close();
-                response.Close();
-
-                JObject parsedResult = JObject.Parse(result);
-                JArray items = (JArray)parsedResult["data"]["items"];
-                ArrayList dataList = new ArrayList();
-
-                foreach (JObject resultOne in items)
-                {
-                    try
-                    {
-                        SearchPlaylistModel searchPlaylistModel = new SearchPlaylistModel
-                        {
-                            id = resultOne["id"].ToString(),
-                            title = resultOne["title"].ToString(),
-                            thumbnail = resultOne["thumbnail"]["sqDefault"].ToString(),
-                            size = resultOne["size"].ToString(),
-                            type = YOUTUBE_TYPE
-                        };
-
-                        dataList.Add(searchPlaylistModel);
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
-
-                Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
-                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
-            }
-            catch (Exception ex)
-            {
-                Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(FAIL_STRING);
-                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
         }
 
@@ -517,62 +762,7 @@ namespace MusicListWS
                 }
 
                 Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
-                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
-            }
-            catch (Exception ex)
-            {
-                Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(FAIL_STRING);
-                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
-            }
-        }
-
-        [WebMethod]
-        public void YoutubePlaylistDetailSearch(string id, int index)
-        {
-            string url = "https://gdata.youtube.com/feeds/api/playlists/" + id + "?start-index=" + (((index - 1) * maxResults) + 1) + "&max-results=" + maxResults + "&alt=jsonc&v=2";
-
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                string result = reader.ReadToEnd();
-                stream.Close();
-                response.Close();
-
-                JObject parsedResult = JObject.Parse(result);
-                JArray items = (JArray)parsedResult["data"]["items"];
-                ArrayList dataList = new ArrayList();
-
-                foreach (JObject resultOne in items)
-                {
-                    try
-                    {
-                        SearchDataModel searchDataModel = new SearchDataModel
-                        {
-                            id = resultOne["video"]["id"].ToString(),
-                            title = resultOne["video"]["title"].ToString(),
-                            thumbnail = resultOne["video"]["thumbnail"]["sqDefault"].ToString(),
-                            uploaded = resultOne["video"]["uploaded"].ToString(),
-                            viewCount = resultOne["video"]["viewCount"].ToString(),
-                            duration = resultOne["video"]["duration"].ToString(),
-                            uploader = resultOne["video"]["uploader"].ToString(),
-                            onlyYoutube = CheckOnlyYoutube(resultOne["video"]["id"].ToString()),
-                            trackType = YOUTUBE_TYPE
-                        };
-
-                        dataList.Add(searchDataModel);
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
-
-                Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                Context.Response.Write(RESULT_FIRST_STRING + RESULT_NEXT_TOKEN_STRING + "\"" + (index + 1) + "\"," + RESULT_LIST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
                 //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
@@ -616,11 +806,8 @@ namespace MusicListWS
                             id = resultOne["id"].ToString(),
                             title = resultOne["title"].ToString(),
                             thumbnail = (resultOne["artwork_url"] == null ? "" : resultOne["artwork_url"]).ToString(),
-                            uploaded = resultOne["created_at"].ToString(),
-                            viewCount = resultOne["playback_count"].ToString(),
                             duration = resultOne["duration"].ToString(),
                             uploader = resultOne["user"]["username"].ToString(),
-                            onlyYoutube = NOT_ONLY_YOUTUBE_TYPE,
                             trackType = SOUND_CLOUD_TYPE
                         };
 
@@ -632,7 +819,7 @@ namespace MusicListWS
                 }
 
                 Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
+                Context.Response.Write(RESULT_FIRST_STRING + RESULT_NEXT_TOKEN_STRING + "\"" + (index + 1) + "\"," + RESULT_LIST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
                 //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
             }
             catch (Exception ex)
@@ -640,207 +827,6 @@ namespace MusicListWS
                 Context.Response.ContentType = "application/json; charset=utf-8";
                 Context.Response.Write(FAIL_STRING);
                 //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
-            }
-        }
-
-        [WebMethod]
-        public void YoutubeHotTrackSearch(string category, int index)
-        {
-            Context.Response.ContentType = "application/json; charset=utf-8";
-            string url = "http://gdata.youtube.com/feeds/api/videos?category=" + category + "&max-results=" + maxResults + "&alt=jsonc&v=2&start-index=" + (((index - 1) * maxResults) + 1) + "&orderby=viewCount";
-
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                string result = reader.ReadToEnd();
-                stream.Close();
-                response.Close();
-
-                JObject parsedResult = JObject.Parse(result);
-                JArray items = (JArray)parsedResult["data"]["items"];
-                ArrayList dataList = new ArrayList();
-
-                foreach (JObject resultOne in items)
-                {
-                    try
-                    {
-                        SearchDataModel searchDataModel = new SearchDataModel
-                        {
-                            id = resultOne["id"].ToString(),
-                            title = resultOne["title"].ToString(),
-                            thumbnail = resultOne["thumbnail"]["sqDefault"].ToString(),
-                            viewCount = resultOne["viewCount"].ToString(),
-                            uploaded = resultOne["uploaded"].ToString(),
-                            duration = resultOne["duration"].ToString(),
-                            uploader = resultOne["uploader"].ToString(),
-                            onlyYoutube = CheckOnlyYoutube(resultOne["id"].ToString()),
-                            trackType = YOUTUBE_TYPE
-                        };
-
-                        dataList.Add(searchDataModel);
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
-
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
-            }
-            catch (Exception ex)
-            {
-                Context.Response.Write(FAIL_STRING);
-            }
-        }
-
-        [WebMethod]
-        public void SoundcloudHotTrackSearch(string category, int index)
-        {
-            Context.Response.ContentType = "application/json; charset=utf-8";
-            string url = "https://api.soundcloud.com/tracks.json?client_id=" + SOUNDCLOUD_CLIENT_KEY + "&genres= " + category + "&&limit=" + maxResults + "&offset=" + ((index - 1) * maxResults) + "&order=hotness";
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                string result = reader.ReadToEnd();
-                stream.Close();
-                response.Close();
-
-                JArray items = JArray.Parse(result);
-                ArrayList dataList = new ArrayList();
-
-                foreach (JObject resultOne in items)
-                {
-                    try
-                    {
-                        if (resultOne["streamable"].ToString().Equals("false"))
-                        {
-                            continue;
-                        }
-
-                        SearchDataModel searchDataModel = new SearchDataModel
-                        {
-                            id = resultOne["id"].ToString(),
-                            title = resultOne["title"].ToString(),
-                            thumbnail = (resultOne["artwork_url"] == null ? "" : resultOne["artwork_url"]).ToString(),
-                            viewCount = resultOne["playback_count"].ToString(),
-                            uploaded = resultOne["created_at"].ToString(),
-                            duration = resultOne["duration"].ToString(),
-                            uploader = resultOne["user"]["username"].ToString(),
-                            onlyYoutube = NOT_ONLY_YOUTUBE_TYPE,
-                            trackType = SOUND_CLOUD_TYPE
-                        };
-
-                        dataList.Add(searchDataModel);
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
-
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
-            }
-            catch (Exception ex)
-            {
-                Context.Response.Write(FAIL_STRING);
-            }
-        }
-
-        private String youtube_api_key = "AIzaSyAU_RCgyb2gf9gVht1OulCXbNq7re8jti8";
-        
-        [WebMethod]
-        public String YoutubeV3TrackDuration(string videoId)
-        {
-            string url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=" + videoId + "&key=" + youtube_api_key;
-            string duration = "";
-
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                string result = reader.ReadToEnd();
-                stream.Close();
-                response.Close();
-
-                JObject parsedResult = JObject.Parse(result);
-                JArray items = (JArray)parsedResult["items"];
-
-                foreach (JObject resultOne in items)
-                {
-                    try
-                    {
-                        duration = resultOne["contentDetails"]["duration"].ToString();
-                    }
-                    catch (Exception e)
-                    {
-                        duration = "PT0M0S";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //PT0H0S
-                duration = "PT0M0S";
-            }
-
-            return duration;
-        }
-
-        [WebMethod]
-        public void YoutubeV3TrackSearch(string keyword, string pageToken)
-        {
-            string url = "https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&q=" + keyword + "&maxResults=" + maxResults + "&pageToken=" + pageToken + "&key=" + youtube_api_key;
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                string result = reader.ReadToEnd();
-                stream.Close();
-                response.Close();
-
-                JObject parsedResult = JObject.Parse(result);
-                JArray items = (JArray)parsedResult["items"];
-                ArrayList dataList = new ArrayList();
-
-                foreach (JObject resultOne in items)
-                {
-                    try
-                    {
-                        SearchDataModel searchDataModel = new SearchDataModel
-                        {
-                            id = resultOne["id"]["videoId"].ToString(),
-                            title = resultOne["snippet"]["title"].ToString(),
-                            thumbnail = resultOne["snippet"]["thumbnails"]["default"]["url"].ToString(),
-                            duration = YoutubeV3TrackDuration(resultOne["id"]["videoId"].ToString()),
-                            uploader = resultOne["snippet"]["channelTitle"].ToString(),
-                            onlyYoutube = 0,
-                            trackType = YOUTUBE_TYPE
-                        };
-
-                        dataList.Add(searchDataModel);
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
-                Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING);
-
-                //return RESULT_FIRST_STRING + JsonConvert.SerializeObject(dataList) + RESULT_LAST_STRING;
-            }
-            catch (Exception ex)
-            {
-                Context.Response.ContentType = "application/json; charset=utf-8";
-                Context.Response.Write(FAIL_STRING);
-                //return FAIL_STRING;
             }
         }
     }
