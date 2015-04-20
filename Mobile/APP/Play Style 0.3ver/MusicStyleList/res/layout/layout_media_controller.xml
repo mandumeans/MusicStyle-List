@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical"
+    android:background="@color/mediaplayer_controller_backgound">
+
+    <LinearLayout
+        android:id="@+id/linearlayout_top"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="1.0" >
+
+        <TextView
+            android:id="@+id/textview_current_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white" />
+
+        <SeekBar
+            android:id="@+id/progressbar_play_control"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8" 
+            android:maxHeight="4dp"
+            android:progress="0"
+            android:secondaryProgress="0"
+            android:progressDrawable="@drawable/mediaplayer_seekbar"
+            android:thumb="@drawable/selector_seekbar_thumb"/>
+
+        <TextView
+            android:id="@+id/textview_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dip"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/imagebutton_repeatbutton"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <!-- <ImageButton
+                android:id="@+id/imagebutton_prevbutton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY" /> -->
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1" >
+
+            <ImageButton
+                android:id="@+id/imagebutton_playbutton"
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            android:gravity="center">
+
+            <!-- <ImageButton
+                android:id="@+id/imagebutton_nextbutton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY" /> -->
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/imagebutton_sufflebutton"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

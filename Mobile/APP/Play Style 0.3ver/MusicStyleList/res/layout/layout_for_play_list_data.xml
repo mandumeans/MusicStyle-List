@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip">
+
+    <ImageView
+        android:id="@+id/list_thumb_image_view"
+        android:layout_width="80dip"
+        android:layout_height="60dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="5dip"
+        android:scaleType="fitXY" />
+
+    <LinearLayout
+        android:id="@+id/list_relative_text_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/list_thumb_image_view"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/list_title_text_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="list_title_text_view"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="15dip"
+                android:layout_height="15dip"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/tracknum_in_playlist"/>
+
+            <TextView
+                android:id="@+id/list_size_text_view"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="list_viewcount_text_views"
+                android:textColor="#888888"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

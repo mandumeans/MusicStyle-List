@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- navigation titles array -->
+    <string-array name="navigation_titles_array">
+        <item>추천 트랙</item>
+        <item>검색</item>
+        <item>내 재생목록</item>
+        <item>설정</item>
+    </string-array>
+    
+    <!-- search array for internet search -->
+    <string-array name="action_search_in_searchview_array">
+        <item>Youtube</item>
+        <item>SoundCloud</item>
+    </string-array>
+    
+    <!-- search array for in playlist -->
+    <string-array name="action_search_in_playlistview_array">
+        <item>All</item>
+        <item>Title</item>
+        <item>Uploader</item>
+    </string-array>
+    
+    <!-- prefer type array -->
+    <string-array name="user_prefer_type">
+        <item>Ballad</item>
+        <item>Hip hop</item>
+        <item>RnB</item>
+        <item>Pop</item>
+        <item>Dance</item>
+        <item>Rock</item>
+        <item>Blues</item>
+        <item>Electronic</item>
+    </string-array>
+    
+    <string-array name="user_prefer_value_type">
+        <item>Ballad</item>
+        <item>Hip hop</item>
+        <item>RnB</item>
+        <item>Pop</item>
+        <item>Dance</item>
+        <item>Rock</item>
+        <item>Blues</item>
+        <item>Electronic</item>
+    </string-array>
+    
+    <!-- prefer type array -->
+    <string-array name="user_youtube_prefer_type">
+        <item>Music</item>
+        <item>Film <![CDATA["&"]]> Animation</item>
+        <item>Autos <![CDATA["&"]]> Vehicles</item>
+        <item>Pets <![CDATA["&"]]> Animals</item>
+        <item>Sports</item>
+        <item>Travel <![CDATA["&"]]> Events</item>
+    </string-array>
+    
+    <string-array name="user_youtube_prefer_value_type">
+        <item>10</item>
+        <item>1</item>
+        <item>2</item>
+        <item>15</item>
+        <item>17</item>
+        <item>19</item>
+    </string-array>
+    
+</resources>

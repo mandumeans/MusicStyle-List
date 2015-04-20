@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Play Style</string>
+    
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    
+    <!-- action bar -->
+    <string name="action_search">search</string>
+    <string name="action_spinner">spinner</string>
+    
+    <!-- empty list -->
+    <string name="empty_search_list">검색을 해주세요</string>
+    <string name="empty_user_play_list">재생목록을 추가 해주세요</string>
+    
+    <!-- fragment title -->
+    <string name="fragment_title_hot_youtube_track">Youtube</string>
+    <string name="fragment_title_hot_soundcloud_track">SoundCloud</string>
+    <string name="fragment_title_search_track">트랙</string>
+    <string name="fragment_title_search_playlist">재생목록</string>
+    <string name="fragment_title_user_track">내 트랙</string>
+    <string name="fragment_title_user_playlist">내 재생목록</string>
+    
+    <!-- dialog folder -->
+    <string name="dialog_folder_title">제목을 입력하세요</string>
+    <string name="dialog_ok">확인</string>
+    <string name="dialog_title">재생목록 추가</string>
+    <string name="dialog_cancle">취소</string>
+    <string name="create_folder">재생목록 생성</string>
+    <string name="insert_track">Insert Track : </string>
+    <string name="delete_track">Delete Track : </string>
+    <string name="delete_folder">Delete Folder : </string>
+    
+    <!-- popup -->
+    <string name="popup_menu_add_to_play_list">재생목록에 추가</string>
+    <string name="popup_menu_delete_in_play_list">재생목록에서 삭제</string>
+    <string name="popup_menu_delete_track">트랙 삭제</string>
+    
+    <!-- only youtube -->
+    <string name="only_youtube">Only YT Player</string>
+    
+    <!-- youtube error -->
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    
+    <!-- settings -->
+    <string name="setting_choose_genre_title">좋아하는 사운드클라우드 장르가 무엇인가요?</string>
+    <string name="setting_choose_genre_summary">좋아하는 사운드클라우드 장르를 선택하시면 추천 트랙에 관련 자료가 보여집니다.</string>
+    <string name="setting_choose_genre_dialog_title">추천 사운드클라우드 트랙을 위해 좋아하는 장르를 선택해주세요</string>
+    
+    <string name="setting_youtube_choose_genre_title">좋아하는 유튜브 장르가 무엇인가요?</string>
+    <string name="setting_youtube_choose_genre_summary">좋아하는 유튜브 장르를 선택하시면 추천 트랙에 관련 자료가 보여집니다.</string>
+    <string name="setting_youtube_choose_genre_dialog_title">추천 유튜브 트랙을 위해 좋아하는 장르를 선택해주세요</string>
+    
+    <string name="setting_wifi_lock_title">Wi-Fi lock 사용하기</string>
+    <string name="setting_wifi_lock_summary">와이파이 기능이 꺼지지 않도록 도와줍니다. 사용자가 기기를 사용하지 않을시 와이파이가 꺼지는 것을 방지합니다.</string>
+    
+    <string name="setting_use_youtube_player_title">Youtube player 사용하기</string>
+    <string name="setting_use_youtube_player_summary">유튜브 동영상을 유튜브 플레이어로 시청할 수 있습니다.</string>
+    
+    <string name="setting_developer_title">Funny Developers</string>
+    <string name="setting_developer_summary">에러에 관해서 busungg@gmail.com 로 이메일 주세요</string>
+</resources>
