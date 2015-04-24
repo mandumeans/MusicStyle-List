@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ad="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/mainactivity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:windowActionBarOverlay="true" />
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/navigation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainactivity_toolbar" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                ad:adSize="BANNER"
+                ad:adUnitId="ca-app-pub-8722652440187933/8629871606"
+                android:background="@color/adview_bg" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/adView"
+                android:orientation="vertical" >
+
+                <com.funny.developers.musicstylelist.view.SlidingTabLayout
+                    android:id="@+id/mainfragment_viewpager_tabindicator"
+                    style="@style/SlidingTabStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <View
+                    android:id="@+id/viewpager_split_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="5px"
+                    android:background="@color/listview_divider" />
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/mainfragment_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/navigation_drawer"
+            android:layout_width="210dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/white"
+            android:choiceMode="singleChoice"
+            android:divider="@color/listview_divider"
+            android:dividerHeight="1dp" />
+    </android.support.v4.widget.DrawerLayout>
+
+</RelativeLayout>

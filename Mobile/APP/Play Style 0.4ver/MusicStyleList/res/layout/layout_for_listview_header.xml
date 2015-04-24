@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/header_thumnail_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
+
+    <LinearLayout
+        android:id="@+id/header_tracknum_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dip"
+        android:orientation="horizontal" 
+        android:background="@color/grey">
+
+        <ImageView
+            android:layout_width="15dip"
+            android:layout_height="15dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/tracknum_in_playlist_white" />
+
+        <TextView
+            android:id="@+id/header_tracknum_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dip"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/header_title_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/header_tracknum_layout"
+        android:layout_margin="10dip"
+        android:background="@color/grey"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+    
+    <ImageView 
+        android:id="@+id/header_play_button"
+        android:layout_width="60dip"
+        android:layout_height="60dip"
+        android:layout_centerInParent="true"
+        android:scaleType="fitXY"
+        android:background="@drawable/header_play_button"/>
+
+</RelativeLayout>

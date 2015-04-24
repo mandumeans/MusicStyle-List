@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- SlidingTab Style -->
+    <style name="SlidingTabStyle">
+        <item name="android:background">@drawable/slidingtab_background</item>
+    </style>
+
+    <!-- Viewpager Style -->
+    <style name="ViewpagerStyle">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="Setting.Style" parent="@style/Theme.AppCompat.Light">
+        <item name="android:title">@style/Setting.Title.Style</item>
+        <item name="android:textColorPrimary">#424242</item>
+        <item name="android:textColorSecondary">#BDBDBD</item>
+    </style>
+    
+    <style name="Setting.Title.Style" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">#E57373</item>
+    </style>
+
+</resources>

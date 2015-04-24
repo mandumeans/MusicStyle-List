@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Play Style</string>
+    
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    
+    <!-- action bar -->
+    <string name="action_search">search</string>
+    <string name="action_spinner">spinner</string>
+
+    <!-- empty list -->
+    <string name="empty_search_list">Please search</string>
+    <string name="empty_user_play_list">Please add track</string>
+    
+    <!-- fragment title -->
+    <string name="fragment_title_hot_youtube_track">Youtube</string>
+    <string name="fragment_title_hot_soundcloud_track">SoundCloud</string>
+    <string name="fragment_title_search_track">Track</string>
+    <string name="fragment_title_search_playlist">Playlist</string>
+    <string name="fragment_title_user_track">My Track</string>
+    <string name="fragment_title_user_playlist">My Playlist</string>
+    
+    <!-- dialog folder -->
+    <string name="dialog_folder_title">Insert Folder Title</string>
+    <string name="dialog_ok">Ok</string>
+    <string name="dialog_title">Add to playlist</string>
+    <string name="dialog_cancle">Cancle</string>
+    <string name="create_folder">Create new folder</string>
+    <string name="insert_track">Insert Track : </string>
+    <string name="delete_track">Delete Track : </string>
+    <string name="delete_folder">Delete Folder : </string>
+    
+    <!-- popup -->
+    <string name="popup_menu_add_to_play_list">Add to playlist</string>
+    <string name="popup_menu_delete_in_play_list">Delete in playList</string>
+    <string name="popup_menu_delete_track">Delete track</string>
+    
+    <!-- only youtube -->
+    <string name="only_youtube">Only YT Player</string>
+    
+    <!-- youtube error -->
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    
+    <!-- settings -->
+    <string name="setting_choose_genre_title">What is your SoundCloud favorite genre?</string>
+    <string name="setting_choose_genre_summary">When you select a SoundCloud favorite genre you can check the relevant data on the hot track section</string>
+    <string name="setting_choose_genre_dialog_title">Choose your SoundCloud favorite genre for Hot Track</string>
+    
+    <string name="setting_youtube_choose_genre_title">What is your Youtube favorite genre?</string>
+    <string name="setting_youtube_choose_genre_summary">When you select a Youtube favorite genre you can check the relevant data on the hot track section</string>
+    <string name="setting_youtube_choose_genre_dialog_title">Choose your Youtube favorite genre for Hot Track</string>
+    
+    <string name="setting_wifi_lock_title">Use the Wi-Fi lock</string>
+    <string name="setting_wifi_lock_summary">Allows an application to keep the Wi-Fi radio awake. Normally the Wi-Fi radio may turn off when the user has not used the device in a while. Acquiring a WifiLock will keep the radio on until the lock is released.</string>
+    
+    <string name="setting_use_youtube_player_title">Use Youtube player</string>
+    <string name="setting_use_youtube_player_summary">You can watch YouTube videos using the YouTube player.</string>
+    
+    <string name="setting_developer_title">Funny Developers</string>
+    <string name="setting_developer_summary">Please email to busungg@gmail.com for error</string>
+</resources>

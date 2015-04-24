@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <ImageView 
+        android:id="@+id/noti_thumnail"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:layout_margin="10dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"/>
+    
+    <ImageButton 
+        android:id="@+id/noti_close_button"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:layout_margin="10dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"/>
+    
+    <ImageButton 
+        android:id="@+id/noti_show_button"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:layout_margin="10dip"
+        android:layout_toLeftOf="@id/noti_close_button"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"/>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/noti_thumnail"
+        android:layout_toLeftOf="@id/noti_show_button"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+        
+        <TextView 
+            android:id="@+id/noti_track_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:maxLines="1"
+            android:ellipsize="marquee"/>
+        
+        <TextView 
+            android:id="@+id/noti_track_uploader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+    </LinearLayout>
+
+</RelativeLayout>

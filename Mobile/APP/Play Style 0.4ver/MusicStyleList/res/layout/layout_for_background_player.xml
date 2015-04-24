@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mediaplayer_controller_backgound"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:orientation="vertical" >
+
+        <ImageButton
+            android:id="@+id/collapse_button"
+            android:layout_width="30dip"
+            android:layout_height="15dip"
+            android:layout_marginBottom="5dip"
+            android:layout_marginTop="10dip"
+            android:background="#BDBDBD" />
+
+        <TextView
+            android:id="@+id/text_for_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:enabled="true"
+            android:marqueeRepeatLimit="1"
+            android:singleLine="true"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/text_for_author"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:marqueeRepeatLimit="1"
+            android:singleLine="true"
+            android:textColor="#9E9E9E"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dip" >
+
+        <com.funny.developers.musicstylelist.player.MusicStyleListMediaPlayerController
+            android:id="@+id/media_player_controller"
+            android:layout_width="match_parent"
+            android:layout_height="80dip" />
+
+        <View
+            android:id="@+id/lock_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#88333333"
+            android:clickable="true"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/loading_progressbar"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/track_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EEEEEE"
+        android:divider="@color/listview_divider"
+        android:dividerHeight="1dp" />
+
+</LinearLayout>
